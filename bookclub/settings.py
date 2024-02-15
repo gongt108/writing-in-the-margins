@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-jt51mty&w-#xu%b_$r4qp$o8p-y7j!a1q0$c(t58465ccarmxp"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -95,8 +95,12 @@ WSGI_APPLICATION = "bookclub.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "project4",
+        "USER": "tiffanygong",
+        "PASSWORD": "testpass",
+        "HOST": "localhost",
+        "PORT": 5432,
     }
 }
 
