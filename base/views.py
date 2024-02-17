@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+import json
 
 from .forms import SearchForm
 
@@ -10,6 +11,9 @@ def home(request):
 
 
 def searchresults_view(request):
+    with open("./bookscraper/booksdata.json") as book_search_data:
+        search_results = json.load(book_search_data)
+
     search_query = request.GET.get("search", "")
 
     if request.method == "POST":
@@ -19,7 +23,11 @@ def searchresults_view(request):
     #         return HttpResponseRedirect("/search")
     # else:
     # form = SearchForm()
-    return render(request, "book_search.html", {"search_query": search_query})
+    return render(
+        request,
+        "book_search.html",
+        {"search_query": search_query, "search_results": search_results},
+    )
 
 
 def bookclub_view(request):
