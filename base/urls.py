@@ -12,5 +12,10 @@ urlpatterns = [
         views.chapterdiscussion_view,
         name="chapter-discussion",
     ),
+    path(
+        "book/forum/",
+        views.forum_view,
+        name="other-discussion",
+    ),
     path("search/", views.searchresults_view, name="search-view"),
 ]

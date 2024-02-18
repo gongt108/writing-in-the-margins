@@ -33,35 +33,7 @@
         </div>
         <!-- Book Details -->
         <div class="w-[48rem] ml-24">
-            <div class="flex space-x-4 w-full border-b border-gray-500 pb-1 mb-2">
-                <ul>
-                    <li>
-                        <a href="#"
-                           class="no-underline hover:underline hover:text-teal-900 active:font-semibold active">Details</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <a href="/book/chapter-discussion"
-                           class="no-underline hover:underline hover:text-teal-900">Chapter Discussions</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <a href="#" class="no-underline hover:underline hover:text-teal-900">Other Discussions</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <a href="#" class="no-underline hover:underline hover:text-teal-900">Reviews</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <a href="#" class="no-underline hover:underline hover:text-teal-900">Quotes</a>
-                    </li>
-                </ul>
-            </div>
+            {% include 'components/book_nav.html' %}
             <h1 class="book-title font-semibold text-3xl mt-4">Crying in H Mart</h1>
             <h2 class="author text-2xl font-light my-4">Michelle Zauner</h2>
             <div class="flex items-center">

@@ -7,6 +7,8 @@ from .forms import SearchForm
 
 # Create your views here.
 def home(request):
+    if request.method == "POST":
+        pass
     return render(request, "home.html")
 
 
@@ -39,4 +41,8 @@ def book_view(request):
 
 
 def chapterdiscussion_view(request):
-    return render(request, "book_sample.html")
+    return render(request, "chapter_discussion.html")
+
+
+def forum_view(request):
+    return render(request, "forum.html")

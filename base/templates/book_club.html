@@ -2,5 +2,93 @@
 {% load tailwind_filters %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h1>Book Club</h1>
+    <div class="bg-blue-100 h-full mx-auto w-fit flex px-24 pt-24">
+        <!-- Side bar -->
+        <div class="flex flex-col w-60 content-center text-center">
+            <h2 class="text-xl font-semibold mx-auto mb-4">Currently Reading</h2>
+            <img src="https://m.media-amazon.com/images/I/81oCrA7-plL._AC_UF1000,1000_QL80_.jpg"
+                 alt="book cover"
+                 class="w-48 rounded-lg mx-auto mb-4">
+            <p class="font-semibold">Next Scheduled Discussion</p>
+            <p>February 19, 2024</p>
+        </div>
+        <!-- Book Details -->
+        <div class="w-[36rem] ml-20 mr-12">
+            <div class="flex space-x-4 w-full border-b border-gray-500 pb-1 mb-2">All Discussions</div>
+            <div class="mt-4">
+                <table class="w-full border border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 border">
+                            <td class="pl-2 border">Topic</td>
+                            <td class="pl-2 border">Last Updated</td>
+                            <td class="pl-2 border">Replies</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border even:bg-slate-100">
+                            </>
+                            <td class="border pl-2">
+                                </>
+                                <div class="flex flex-col ">
+                                    <a href="/book">
+                                        <h3 class="font-semibold text-lg hover:underline">Crying in H Mart</h3>
+                                        <p class="pl-2 text-sm font-light">Book Discussion</p>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="border pl-2">
+                                </>Today
+                            </td>
+                            <td class="border pl-2">
+                                <div class="flex items-center">
+                                    <svg class="h-8 w-8 text-gray-500"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                                    </svg>
+                                    <p class="h-full">2</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="border even:bg-slate-100">
+                            </>
+                            <td class="border pl-2">
+                                </>
+                                <div class="flex flex-col ">
+                                    <a href="/book">
+                                        <h3 class="font-semibold text-lg hover:underline">Korean food</h3>
+                                        <p class="pl-2 text-sm font-light">Other Discussion</p>
+                                    </a>
+                                </div>
+                            </td>
+                            <td class="border pl-2">
+                                </>Today
+                            </td>
+                            <td class="border pl-2">
+                                <div class="flex items-center">
+                                    <svg class="h-8 w-8 text-gray-500"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                                    </svg>
+                                    <p class="h-full">2</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="flex flex-col w-60 ">
+            <h2 class="text-lg font-semibold  mb-4">Bookclub Members</h2>
+            <div class="flex items-center">
+                <img src="https://m.media-amazon.com/images/I/81oCrA7-plL._AC_UF1000,1000_QL80_.jpg"
+                     alt="book cover"
+                     class="w-12 h-12 rounded-full mr-4">
+                <p class="font-semibold">Tiffany Gong</p>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
