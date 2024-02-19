@@ -23,6 +23,11 @@ class ResultItem(scrapy.Item):
 class BookItem(scrapy.Item):
     book_cover = scrapy.Field()
     title = scrapy.Field()
-    author = scrapy.Field()
-    other_details = scrapy.Field()
+    contributors = scrapy.Field()
+    avg_rating = scrapy.Field()
+    num_rating = scrapy.Field()
+    description = scrapy.Field()
+    genres = scrapy.Field()
+    page_num = scrapy.Field()
+    publication_date = scrapy.Field()
     book_id = scrapy.Field()

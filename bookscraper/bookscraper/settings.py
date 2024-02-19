@@ -57,10 +57,10 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    "bookscraper.pipelines.BookscraperPipeline": 300,
-    # "bookscraper.pipelines.SaveToMySQLPipeline": 400,  # number represents order in pipeline. lower number first
-}
+# ITEM_PIPELINES = {
+#     "bookscraper.pipelines.BookscraperPipeline": 300,
+#     "bookscraper.pipelines.SaveToMySQLPipeline": 400,  # number represents order in pipeline. lower number first
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

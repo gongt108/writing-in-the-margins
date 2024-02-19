@@ -4,13 +4,12 @@ import scrapy.crawler as crawler
 from scrapy.utils.log import configure_logging
 from scrapy.utils.project import get_project_settings
 from multiprocessing import Process, Queue
-from twisted.internet import reactor
-
+from bs4 import BeautifulSoup
 import urllib.parse
 
 # from bookscraper.bookscraper.items import ResultItem, BookItem
 
-from bookscraper.items import ResultItem, BookItem
+from bookscraper.items import BookItem
 
 
 class BookSpider(scrapy.Spider):
@@ -18,44 +17,48 @@ class BookSpider(scrapy.Spider):
     allowed_domains = ["www.goodreads.com"]
 
     custom_settings = {
-        "FEEDS": {"booksdata.json": {"format": "json", "overwrite": True}}
+        "FEEDS": {"bookdata.json": {"format": "json", "overwrite": True}},
+        "ITEM_PIPELINES": {
+            "bookscraper.pipelines.BookscraperPipeline": 400,
+        },
     }
 
-    def __init__(self, search_query=None, result_queue=None):
-        self.search_query = search_query
-        self.result_queue = result_queue
+    def __init__(self, book_id=None):
+        self.book_id = book_id
 
     def start_requests(self):
-        # def f(q):
-        #     try:
-        #         runner = crawler.CrawlerRunner()
-        #         deferred =
-        if self.search_query:
-            search_query = urllib.parse.quote_plus(self.search_query)
-            url = f"https://www.goodreads.com/search?utf8=✓&q={search_query}"
-            yield scrapy.Request(url, callback=self.parse_search_results)
+        url = "https://www.goodreads.com/book/show/54814676-crying-in-h-mart"
+        yield scrapy.Request(url, callback=self.parse_search_results)
+        # if self.book_id:
+        #     url = f"https://www.goodreads.com/book/show/{self.book_id}"
+        #     yield scrapy.Request(url, callback=self.parse_search_results)
 
     def parse_search_results(self, response):
-        result_item = ResultItem()
-        books = response.css("table.tableList tr")
-        for book in books:
-            result_item["book_cover"] = book.css(
-                "img.bookCover::attr(src)"
-            ).extract_first()
-            result_item["title"] = book.css("a.bookTitle span::text").get()
-            result_item["author"] = book.css("a.authorName span::text").get()
-            result_item["other_details"] = (
-                book.xpath("td[2]/div[1]/span").xpath("normalize-space()").getall()[0]
-            )
-            parsed_url = urllib.parse.urlparse(
-                book.css("a.bookTitle::attr(href)").extract_first()
-            )
-            result_item["book_id"] = parsed_url.path.split("/")[-1]
-
-            # Put the book item in the result queue
-            yield result_item
-
-    def parse_book_page(self, response):
         book_item = BookItem()
+        book = response.css("div.BookPage__gridContainer")
+        book_item["book_cover"] = book.css(
+            "img.ResponsiveImage::attr(src)"
+        ).extract_first()
+        book_item["title"] = book.css("div.BookPageTitleSection__title h1::text").get()
+        book_item["contributors"] = response.css(
+            "div.ContributorLinksList span.ContributorLink__name::text"
+        ).getall()
+        book_item["avg_rating"] = book.css("div.RatingStatistics__rating::text").get()
+        book_item["num_rating"] = book.css(
+            "div.RatingStatistics__meta span.u-dot-before::text"
+        ).get()
+        book_item["description"] = book.css(
+            "div.BookPageMetadataSection__description div.DetailsLayoutRightParagraph__widthConstrained span.Formatted::text"
+        ).getall()
+        book_item["genres"] = book.css(
+            "ul.CollapsableList span.Button__labelItem::text"
+        ).getall()[:5]
+        book_item["page_num"] = book.css("div.FeaturedDetails p::text").getall()[0]
+        book_item["publication_date"] = book.css(
+            "div.FeaturedDetails p::text"
+        ).getall()[1]
+        book_item["book_id"] = (
+            response.xpath('//head/link[@rel="canonical"]/@href').get().split("/")[-1]
+        )
 
         yield book_item

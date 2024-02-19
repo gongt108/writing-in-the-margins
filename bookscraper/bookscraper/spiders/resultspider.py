@@ -4,13 +4,12 @@ import scrapy.crawler as crawler
 from scrapy.utils.log import configure_logging
 from scrapy.utils.project import get_project_settings
 from multiprocessing import Process, Queue
-from twisted.internet import reactor
 
 import urllib.parse
 
-from bookscraper.bookscraper.items import ResultItem, BookItem
+# from bookscraper.bookscraper.items import ResultItem, BookItem
 
-# from bookscraper.items import ResultItem, BookItem
+from bookscraper.items import ResultItem, BookItem
 
 
 class ResultSpider(scrapy.Spider):
@@ -18,7 +17,7 @@ class ResultSpider(scrapy.Spider):
     allowed_domains = ["www.goodreads.com"]
 
     custom_settings = {
-        "FEEDS": {"booksdata.json": {"format": "json", "overwrite": True}}
+        "FEEDS": {"booksdata.json": {"format": "json", "overwrite": True}},
     }
 
     def __init__(self, search_query=None, result_queue=None):
