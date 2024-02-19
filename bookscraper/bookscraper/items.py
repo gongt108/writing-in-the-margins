@@ -12,11 +12,17 @@ class BookscraperItem(scrapy.Item):
     pass
 
 
+class ResultItem(scrapy.Item):
+    book_cover = scrapy.Field()
+    title = scrapy.Field()
+    author = scrapy.Field()
+    other_details = scrapy.Field()
+    book_id = scrapy.Field()
+
+
 class BookItem(scrapy.Item):
     book_cover = scrapy.Field()
     title = scrapy.Field()
     author = scrapy.Field()
     other_details = scrapy.Field()
     book_id = scrapy.Field()
-    # num_rating = scrapy.Field()
-    # publication_year = scrapy.Field()

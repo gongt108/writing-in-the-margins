@@ -8,13 +8,13 @@ from twisted.internet import reactor
 
 import urllib.parse
 
-# from bookscraper.bookscraper.items import ResultItem, BookItem
+from bookscraper.bookscraper.items import ResultItem, BookItem
 
-from bookscraper.items import ResultItem, BookItem
+# from bookscraper.items import ResultItem, BookItem
 
 
-class BookSpider(scrapy.Spider):
-    name = "bookspooder"
+class ResultSpider(scrapy.Spider):
+    name = "resultspider"
     allowed_domains = ["www.goodreads.com"]
 
     custom_settings = {
@@ -54,8 +54,3 @@ class BookSpider(scrapy.Spider):
 
             # Put the book item in the result queue
             yield result_item
-
-    def parse_book_page(self, response):
-        book_item = BookItem()
-
-        yield book_item

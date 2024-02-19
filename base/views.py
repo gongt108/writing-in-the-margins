@@ -10,7 +10,7 @@ import subprocess
 # Add the directory containing the Scrapy project to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "bookscraper"))
 from .forms import SearchForm
-from bookscraper.bookscraper.spiders.bookspider import BookSpider
+from bookscraper.bookscraper.spiders.resultspider import ResultSpider
 
 
 # Create your views here.
@@ -39,7 +39,7 @@ def start_scraping(search_query):
         }
     )
     # Pass search_query as argument to the spider
-    process.crawl(BookSpider, search_query=search_query)
+    process.crawl(ResultSpider, search_query=search_query)
     process.start()
 
 
