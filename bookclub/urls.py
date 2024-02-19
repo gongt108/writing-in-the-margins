@@ -27,4 +27,5 @@ urlpatterns = [
     path("profile/", user_view.profile, name="profile"),
     path("card/", user_view.card, name="card"),
     path("__reload__/", include("django_browser_reload.urls")),
+    path("django-rq/", include("django_rq.urls")),
 ]

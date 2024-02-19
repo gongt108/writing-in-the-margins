@@ -17,6 +17,6 @@ class BookItem(scrapy.Item):
     title = scrapy.Field()
     author = scrapy.Field()
     other_details = scrapy.Field()
-    # avg_rating = scrapy.Field()
+    book_id = scrapy.Field()
     # num_rating = scrapy.Field()
     # publication_year = scrapy.Field()

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load tailwind_filters %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="overflow-hidden bg-blue-200 flex-1 flex">
+        <div class="loading-container">
+            <!-- Add your cute graphics here -->
+            <img src="{% static 'img/loading_animation.gif' %}"
+                 alt="Loading..."
+                 class="loading-image">
+            <h2>Loading...</h2>
+        </div>
+    </div>
+{% endblock content %}

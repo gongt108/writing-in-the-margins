@@ -1,5 +1,6 @@
 from pathlib import Path
 import psycopg2
+import sys
 import os
 from dotenv import load_dotenv
 
@@ -7,7 +8,7 @@ load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+sys.path.append(os.path.join(BASE_DIR, "bookscraper"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -33,12 +34,15 @@ INSTALLED_APPS = [
     # own
     "base",
     "users",
+    "bookscraper",
     # tailwind
     "tailwind",
     "theme",
     "crispy_forms",
     "crispy_tailwind",
     "django_browser_reload",
+    # other apps
+    "django_rq",
 ]
 
 TAILWIND_APP_NAME = "theme"
@@ -139,3 +143,47 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+RQ_QUEUES = {
+    "default": {
+        "HOST": "localhost",
+        "PORT": 6379,
+        "DB": 0,
+        "USERNAME": "some-user",
+        "PASSWORD": "some-password",
+        "DEFAULT_TIMEOUT": 360,
+        "REDIS_CLIENT_KWARGS": {  # Eventual additional Redis connection arguments
+            "ssl_cert_reqs": None,
+        },
+    },
+    "with-sentinel": {
+        "SENTINELS": [("localhost", 26736), ("localhost", 26737)],
+        "MASTER_NAME": "redismaster",
+        "DB": 0,
+        # Redis username/password
+        "USERNAME": "redis-user",
+        "PASSWORD": "secret",
+        "SOCKET_TIMEOUT": 0.3,
+        "CONNECTION_KWARGS": {  # Eventual additional Redis connection arguments
+            "ssl": True
+        },
+        "SENTINEL_KWARGS": {  # Eventual Sentinel connection arguments
+            # If Sentinel also has auth, username/password can be passed here
+            "username": "sentinel-user",
+            "password": "secret",
+        },
+    },
+    "high": {
+        "URL": os.getenv(
+            "REDISTOGO_URL", "redis://localhost:6379/0"
+        ),  # If you're on Heroku
+        "DEFAULT_TIMEOUT": 500,
+    },
+    "low": {
+        "HOST": "localhost",
+        "PORT": 6379,
+        "DB": 0,
+    },
+}
+
+RQ_EXCEPTION_HANDLERS = ["path.to.my.handler"]  # If you need custom exception handlers
