@@ -20,8 +20,8 @@ class BookSpider(scrapy.Spider):
     custom_settings = {
         "FEEDS": {"bookdata.json": {"format": "json", "overwrite": True}},
         "ITEM_PIPELINES": {
-            "bookscraper.pipelines.BookscraperPipeline": 300,
-            "bookscraper.pipelines.SaveToPostgresPipeline": 400,
+            "bookscraper.bookscraper.pipelines.BookscraperPipeline": 300,
+            "bookscraper.bookscraper.pipelines.SaveToPostgresPipeline": 400,
         },
     }
 
@@ -29,11 +29,9 @@ class BookSpider(scrapy.Spider):
         self.book_id = book_id
 
     def start_requests(self):
-        url = "https://www.goodreads.com/book/show/54814676-crying-in-h-mart"
-        yield scrapy.Request(url, callback=self.parse_search_results)
-        # if self.book_id:
-        #     url = f"https://www.goodreads.com/book/show/{self.book_id}"
-        #     yield scrapy.Request(url, callback=self.parse_search_results)
+        if self.book_id:
+            url = f"https://www.goodreads.com/book/show/{self.book_id}"
+            yield scrapy.Request(url, callback=self.parse_search_results)
 
     def parse_search_results(self, response):
         book_item = BookItem()

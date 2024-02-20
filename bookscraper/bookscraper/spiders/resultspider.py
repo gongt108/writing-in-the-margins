@@ -25,10 +25,6 @@ class ResultSpider(scrapy.Spider):
         self.result_queue = result_queue
 
     def start_requests(self):
-        # def f(q):
-        #     try:
-        #         runner = crawler.CrawlerRunner()
-        #         deferred =
         if self.search_query:
             search_query = urllib.parse.quote_plus(self.search_query)
             url = f"https://www.goodreads.com/search?utf8=✓&q={search_query}"

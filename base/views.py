@@ -12,6 +12,7 @@ from .models import Book
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "bookscraper"))
 from .forms import SearchForm
 from bookscraper.bookscraper.spiders.resultspider import ResultSpider
+from bookscraper.bookscraper.spiders.bookspider import BookSpider
 
 
 # Create your views here.
@@ -85,10 +86,24 @@ def bookclub_view(request):
 
 def book_view(request):
     book_id = request.GET.get("book_id")
-    queryset = Book.objects.all()
-    # found_book =
-    print(queryset)
+    found_book = Book.objects.filter(book_id=book_id)
+    if not found_book:
+        subprocess.run(["python", "manage.py", "start_book_scraping", book_id])
+    else:
+        print(found_book)
     return render(request, "book_sample.html")
+
+
+def start_book_scraping(book_id):
+    process = CrawlerProcess(
+        settings={
+            "FEEDS": {"bookdata.json": {"format": "json", "overwrite": True}},
+            "USER_AGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        }
+    )
+    # Pass search_query as argument to the spider
+    process.crawl(BookSpider, book_id=book_id)
+    process.start()
 
 
 def chapterdiscussion_view(request):
