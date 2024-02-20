@@ -7,9 +7,10 @@ from multiprocessing import Process, Queue
 from bs4 import BeautifulSoup
 import urllib.parse
 
-# from bookscraper.bookscraper.items import ResultItem, BookItem
 
-from bookscraper.items import BookItem
+from bookscraper.bookscraper.items import ResultItem, BookItem
+
+# from bookscraper.items import BookItem
 
 
 class BookSpider(scrapy.Spider):
@@ -19,7 +20,8 @@ class BookSpider(scrapy.Spider):
     custom_settings = {
         "FEEDS": {"bookdata.json": {"format": "json", "overwrite": True}},
         "ITEM_PIPELINES": {
-            "bookscraper.pipelines.BookscraperPipeline": 400,
+            "bookscraper.pipelines.BookscraperPipeline": 300,
+            "bookscraper.pipelines.SaveToPostgresPipeline": 400,
         },
     }
 

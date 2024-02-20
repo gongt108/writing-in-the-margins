@@ -11,9 +11,9 @@
                 </h2>
                 {% for result in search_results %}
                     <div class="flex mb-2 border-b pb-4 border-gray-300">
-                        <a href="/book"><img src={{ result.book_cover }} alt="book cover" width="50" height="75"></a>
+                        <a href="/book?book_id={{ result.book_id }}"><img src={{ result.book_cover }} alt="book cover" width="50" height="75"></a>
                         <div class="flex flex-col ml-4">
-                            <a href="/book">
+                            <a href="/book?book_id={{ result.book_id }}">
                                 <h3 class="font-bold text-md hover:underline">{{ result.title | slice:":50" }}</h3>
                             </a>
                             <p>by {{ result.author }}</p>

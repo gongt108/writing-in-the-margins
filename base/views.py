@@ -6,6 +6,7 @@ import json
 import os
 import sys
 import subprocess
+from .models import Book
 
 # Add the directory containing the Scrapy project to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "bookscraper"))
@@ -83,6 +84,10 @@ def bookclub_view(request):
 
 
 def book_view(request):
+    book_id = request.GET.get("book_id")
+    queryset = Book.objects.all()
+    # found_book =
+    print(queryset)
     return render(request, "book_sample.html")
 
 
