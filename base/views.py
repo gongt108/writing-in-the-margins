@@ -17,6 +17,8 @@ from bookscraper.bookscraper.spiders.bookspider import BookSpider
 
 # Create your views here.
 def home(request):
+    if request.user:
+        print(request.user.is_authenticated)
     if request.method == "POST":
         form = SearchForm(request.POST)
         return handle_search_form(request, form)
@@ -86,12 +88,12 @@ def bookclub_view(request):
 
 def book_view(request):
     book_id = request.GET.get("book_id")
-    found_book = Book.objects.filter(book_id=book_id)
+    found_book = Book.objects.filter(book_id=book_id).first()
     if not found_book:
         subprocess.run(["python", "manage.py", "start_book_scraping", book_id])
-    else:
-        print(found_book)
-    return render(request, "book_sample.html")
+        found_book = Book.objects.filter(book_id=book_id).first()
+
+    return render(request, "book_sample.html", {"found_book": found_book})
 
 
 def start_book_scraping(book_id):

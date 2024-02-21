@@ -2,5 +2,80 @@
 {% load tailwind_filters %}
 {% load crispy_forms_tags %}
 {% block content %}
-<h1>Profile Page</h1>
+    <div class="bg-blue-100 min-w-[52rem] mx-auto w-fit flex flex-1 flex-col px-24 xl:pt-12 2xl:pt-20 pb-20">
+        <h1 class="mx-auto text-3xl font-bold mb-8">Profile Page</h1>
+        <img src="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg"
+             alt="profile picture"
+             class="w-60 h-60 object-cover rounded-full mx-auto mb-6">
+        <h1 class="mx-auto text-xl font-semibold mb-6">{{ user.first_name|default:user.username }}</h1>
+        <div class="flex flex-col space-y-2 border border-black rounded-lg p-4 mb-4">
+            <div class="flex justify-between align-middle items-center">
+                <h1 class="font-bold text-lg">Basic Information</h1>
+                <a href="/profile"
+                   class="bg-cyan-500 text-white  hover:bg-white hover:text-cyan-500 border-2 border-cyan-500 cursor-pointer font-semibold rounded-lg px-2 py-0.5">Edit Profile</a>
+            </div>
+            <div class="flex">
+                <h3 class="w-48">First Name:</h3>
+                <p>
+                    {% if user.first_name %}
+                        {{ user.first_name }}
+                    {% else %}
+                        <em>Not set yet</em>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="flex">
+                <h3 class="w-48">Last Name:</h3>
+                <p>
+                    {% if user.last_name %}
+                        {{ user.last_name }}
+                    {% else %}
+                        <em>Not set yet</em>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="flex">
+                <h3 class="w-48">Username:</h3>
+                <p>{{ user.username }}</p>
+            </div>
+            <div class="flex">
+                <h3 class="w-48">Email:</h3>
+                {% if user.email %}
+                    {{ user.email }}
+                {% else %}
+                    <em>Not set yet</em>
+                {% endif %}
+            </div>
+            <div class="flex">
+                <h3 class="w-48">Password:</h3>
+                <p>***********</p>
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2 border border-black rounded-lg p-4 ">
+            <h1 class="font-bold text-lg">Other Information</h1>
+            <div class="flex mt-8">
+                <p class="me-4">Current Book Club:</p>
+                <a href="/book-club" class="underline text-cyan-500">I Cry in H Mart</a>
+            </div>
+            <h1 class="font-bold text-md">Book Lists</h1>
+            <ul class="flex justify-between ms-4 me-8">
+                <li class="underline text-cyan-500">
+                    <a href="/">read</a>
+                </li>
+                <li class="underline text-cyan-500">
+                    <a href="/">currently reading</a>
+                </li>
+                <li class="underline text-cyan-500">
+                    <a href="/">to-read</a>
+                </li>
+                <li class="underline text-cyan-500">
+                    <a href="/">watch list</a>
+                </li>
+            </ul>
+        </div>
+        <div class="flex flex-col m-4 mb-8">
+            <h2 class="font-semibold text-lg mb-2">Latest Activity</h2>
+            <em>No recent activity. Go read a book.</em>
+        </div>
+    </div>
 {% endblock content %}

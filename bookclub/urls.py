@@ -22,9 +22,10 @@ from users import views as user_view
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("base.urls")),
-    path("register/", user_view.register, name="register"),
-    path("login/", user_view.login, name="login"),
-    path("profile/", user_view.profile, name="profile"),
+    path("register/", user_view.signup_view, name="signup"),
+    path("login/", user_view.login_view, name="login"),
+    path("profile/", user_view.profile_view, name="profile"),
+    path("logout/", user_view.logout_view, name="logout"),
     path("card/", user_view.card, name="card"),
     path("__reload__/", include("django_browser_reload.urls")),
     path("django-rq/", include("django_rq.urls")),
