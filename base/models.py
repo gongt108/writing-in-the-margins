@@ -25,14 +25,14 @@ class BookClub(models.Model):
     name = models.CharField(max_length=100)
     book_id = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
     member_list = models.ForeignKey(
-        "MemberList", on_delete=models.CASCADE, related_name="book_club"
+        "MemberList", on_delete=models.CASCADE, related_name="book_club", null=True
     )
-    next_meeting_date = models.DateTimeField()
-    discussion_list_id = models.IntegerField()
+    next_meeting_date = models.DateTimeField(null=True)
+    discussion_list_id = models.IntegerField(null=True)
 
 
 class MemberList(models.Model):
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
 

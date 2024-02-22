@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.db.models import Q
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 import json
@@ -76,7 +77,10 @@ def searchresults_view(request):
 
 
 def bookclub_view(request):
-    return render(request, "book_club.html")
+    discussions = Discussion.objects.filter(
+        Q(type="bookclub") | Q(type="general"), object_id=2
+    )
+    return render(request, "book_club.html", {"discussions": discussions})
 
 
 def book_view(request):
