@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load tailwind_filters %}
+{% load static %}
 {% block content %}
     <div class="mx-auto min-w-fit flex  flex-1 flex-col bg-blue-100 px-28 pt-8">
         <!-- Posts -->
@@ -26,7 +27,7 @@
                 <div class="border-t border-gray-300">
                     <br>
                 </div>
-                <div class="bg-slate-100 min-h-48 mt-4 p-8 flex space-x-4 mb-8">
+                <div class="bg-slate-100 min-h-48 mt-4 p-8 flex space-x-4 mb-8 relative">
                     <div class="flex flex-col bg-teal-100 just-center align-middle text-center p-6">
                         <img src="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg"
                              alt="profile picture"
@@ -36,6 +37,20 @@
                     <div class="flex flex-col">
                         <p class="font-light text-sm">{{ post.pub_date }}</p>
                         <p class="pt-4">{{ post.content }}</p>
+                    </div>
+                    <div class="flex justify-end absolute right-8">
+                        {% if user == post.user %}
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <!-- Add a hidden input field to store the post's ID -->
+                                <input type="hidden" name="post_id_to_delete" value="{{ post.id }}">
+                                <button type="submit"
+                                        name="delete_post_button"
+                                        class="border-2 py-1 px-2 rounded-lg font-semibold text-red-300 border-red-300 hover:bg-red-300 hover:text-white">
+                                    Delete
+                                </button>
+                            </form>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -50,6 +65,7 @@
                     {{ form | crispy }}
                     <div class="flex justify-end mb-2">
                         <button type="submit"
+                                id="create_post_button"
                                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mt-2 ">
                             Post response
                         </button>
@@ -57,5 +73,11 @@
                 </form>
             </div>
         </div>
+        <!-- Scroll-to-bottom button -->
+        <button id="scroll-to-bottom-btn"
+                class="fixed bottom-24 sm:right-4 md:right-16  bg-teal-500 text-white px-4 py-2 rounded-lg shadow-lg">
+            Scroll to Bottom
+        </button>
+        <script src="{% static 'js/scroll.js' %}"></script>
     </div>
 {% endblock content %}

@@ -110,7 +110,6 @@ def forum_view(request):
 
 
 def discussion_view(request, discussion_id):
-    print("Discussion ID:", discussion_id)  # Debugging output
     user = request.user
     form = ResponseForm()
 
@@ -120,9 +119,13 @@ def discussion_view(request, discussion_id):
     posts = Post.objects.filter(discussion=discussion)
 
     if request.method == "POST":
+        if "delete_post_button" in request.POST:
+            post_id_to_delete = request.POST["post_id_to_delete"]
+            post_to_delete = Post.objects.get(id=post_id_to_delete)
+            post_to_delete.delete()
         if not user.is_authenticated:
             print("You must login first.")
-        elif user.is_authenticated:
+        elif "create_post_button" in request.POST and user.is_authenticated:
             form = ResponseForm(request.POST)
             if form.is_valid():
                 content = form.cleaned_data["content"]
