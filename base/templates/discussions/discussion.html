@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load tailwind_filters %}
+{% block content %}
+    <div class="mx-auto min-w-fit flex  flex-1 flex-col bg-blue-100 px-28 pt-8">
+        <!-- Posts -->
+        <div>
+            <div class="border-b border-gray-300 pt-4 pb-2 w-full mb-8">
+                <h1 class="font-semibold text-3xl mb-2">{{ discussion.title }}</h1>
+                <div class="flex space-x-4">
+                    <h3>Title: Crying in Hmart</h3>
+                    <h3>Author: Michelle Zauner</h3>
+                    <h3>Replies: 0</h3>
+                </div>
+            </div>
+            <div class="bg-slate-100 min-h-48 p-8 flex space-x-4 mb-8">
+                <div class="flex flex-col bg-teal-100 just-center align-middle text-center p-6">
+                    <img src="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg"
+                         alt="profile picture"
+                         class="w-36 h-36 object-cover rounded-full mx-auto mb-4">
+                    <h3 class="font-semibold text-lg">Admin</h3>
+                </div>
+                <p class="pt-4">{{ discussion.content }}</p>
+            </div>
+            {% for post in posts %}
+                <div class="border-t border-gray-300">
+                    <br>
+                </div>
+                <div class="bg-slate-100 min-h-48 mt-4 p-8 flex space-x-4 mb-8">
+                    <div class="flex flex-col bg-teal-100 just-center align-middle text-center p-6">
+                        <img src="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg"
+                             alt="profile picture"
+                             class="w-36 h-36 object-cover rounded-full mx-auto mb-4">
+                        <h3 class="font-semibold text-lg">{{ post.user }}</h3>
+                    </div>
+                    <div class="flex flex-col">
+                        <p class="font-light text-sm">{{ post.pub_date }}</p>
+                        <p class="pt-4">{{ post.content }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <!-- Input box -->
+        <div>
+            <div class="flex flex-col py-4 border-t border-gray-300 mb-24">
+                <h3 class="font-semibold text-lg">Responding as {{ user.username }}</h3>
+                <form action="" method="post" class="mt-4">
+                    {% comment %} <textarea name="post_content" cols="30" class="resize-none w-full focus:h-32 p-4"></textarea> {% endcomment %}
+                    {% csrf_token %}
+                    {{ form | crispy }}
+                    <div class="flex justify-end mb-2">
+                        <button type="submit"
+                                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mt-2 ">
+                            Post response
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

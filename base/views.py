@@ -1,16 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 import json
 import os
 import sys
 import subprocess
-from .models import Book
+from .forms import SearchForm, ResponseForm
+from .models import Book, Post, Discussion
 
 # Add the directory containing the Scrapy project to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "bookscraper"))
-from .forms import SearchForm
 from bookscraper.bookscraper.spiders.resultspider import ResultSpider
 from bookscraper.bookscraper.spiders.bookspider import BookSpider
 
@@ -22,14 +23,6 @@ def home(request):
     if request.method == "POST":
         form = SearchForm(request.POST)
         return handle_search_form(request, form)
-
-        # if form.is_valid():
-        #     search_query = form.cleaned_data["search_query"]
-        #     subprocess.run(["python", "manage.py", "start_scraping", search_query])
-
-        #     return HttpResponseRedirect(
-        #         f"/search?search_query={search_query}/"
-        #     )  # Redirect after form submission
     else:
         form = SearchForm()
     return render(request, "home.html", {"form": form})
@@ -114,3 +107,43 @@ def chapterdiscussion_view(request):
 
 def forum_view(request):
     return render(request, "forum.html")
+
+
+def discussion_view(request, discussion_id):
+    print("Discussion ID:", discussion_id)  # Debugging output
+    user = request.user
+    form = ResponseForm()
+
+    # Retrieve the discussion object based on the discussion_id from the URL
+    # discussion = get_object_or_404(Discussion, pk=discussion_id)
+    discussion = Discussion.objects.get(id=discussion_id)
+    posts = Post.objects.filter(discussion=discussion)
+
+    if request.method == "POST":
+        if not user.is_authenticated:
+            print("You must login first.")
+        elif user.is_authenticated:
+            form = ResponseForm(request.POST)
+            if form.is_valid():
+                content = form.cleaned_data["content"]
+                Post.objects.create(discussion=discussion, user=user, content=content)
+                print("post created")
+                return HttpResponseRedirect(
+                    reverse("base:discussion-view", args=(discussion_id,))
+                )
+            else:
+                print("error posting")
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        print(f"Error in {field}: {error}")
+
+    return render(
+        request,
+        "discussions/discussion.html",
+        {"form": form, "discussion": discussion, "posts": posts},
+    )
+
+
+def get_posts_for_discussion(discussion_id):
+    posts = Post.objects.filter(discussion=discussion_id)
+    return posts

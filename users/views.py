@@ -1,11 +1,18 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib import messages
+from django.contrib.auth.forms import (
+    UserCreationForm,
+    AuthenticationForm,
+    PasswordChangeForm,
+)
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 from django.utils.decorators import method_decorator
+
+from .forms import ProfileUpdateForm, UserUpdateForm
 
 
 # Create your views here.
@@ -67,14 +74,46 @@ def profile_view(request):
 @login_required
 def profile_edit_view(request):
     user = request.user
-    # Update fields
-    user.first_name = "New First Name"
-    user.last_name = "New Last Name"
-    user.email = "new_email@example.com"
 
-    # Save changes
-    user.save()
-    return render(request, "users/profile.html", {"user": user})
+    if request.method == "POST":
+        p_form = ProfileUpdateForm(
+            request.POST, request.FILES, instance=request.user.profile
+        )
+
+        if p_form.is_valid():
+
+            p_form.save()
+            messages.success(request, f"Acount Updated Successfully!")
+            return redirect("profile")
+        elif not p_form.is_valid():
+
+            # Print errors for the ProfileUpdateForm
+            for field, errors in p_form.errors.items():
+                for error in errors:
+                    print(f"Error in {field}: {error}")
+    else:
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    return render(request, "users/profile_update.html", {"p_form": p_form})
+
+
+@login_required
+def login_edit_view(request):
+    if request.method == "POST":
+        password_form = PasswordChangeForm(request.user, request.POST)
+
+        if password_form.is_valid():
+            update_session_auth_hash(request, password_form.user)
+            messages.success(request, f"Acount Updated Successfully!")
+            return redirect("profile")
+
+    else:
+        password_form = PasswordChangeForm(request.user)
+
+    context = {
+        "form": password_form,
+    }
+    return render(request, "users/login_update.html", context)
 
 
 def logout_view(request):

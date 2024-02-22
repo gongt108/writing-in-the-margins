@@ -17,48 +17,20 @@
               method="post">
             {% csrf_token %}
             <!-- Display form errors -->
-            {% if p_form.errors %}
+            {% if form.errors %}
                 <div class="alert alert-danger">
                     Missing Fields:
                     <ul>
-                        {% for field, errors in p_form.errors.items %}
+                        {% for field, errors in form.errors.items %}
                             {% for error in errors %}<li>Error in {{ field }}: {{ error }}</li>{% endfor %}
                         {% endfor %}
                     </ul>
                 </div>
             {% endif %}
             <div class="flex justify-between align-middle items-center">
-                <h1 class="font-bold text-lg">Basic Information</h1>
+                <h1 class="font-bold text-lg">Login Information</h1>
             </div>
-            <div class="flex items-center">
-                <h3 class="w-48">First Name:</h3>
-                <input type="text"
-                       name="first_name"
-                       value="{{ user.profile.first_name }}"
-                       class=" w-48 rounded-lg">
-            </div>
-            <div class="flex items-center">
-                <h3 class="w-48">Last Name:</h3>
-                <input type="text"
-                       name="last_name"
-                       value="{{ user.profile.last_name }}"
-                       class=" w-48 rounded-lg">
-            </div>
-            <div class="flex items-center">
-                <h3 class="w-48">Email:</h3>
-                <input type="email"
-                       name="email"
-                       value="{{ user.profile.email }}"
-                       class=" w-48 rounded-lg">
-            </div>
-            {% comment %} <div class="flex">
-                <h3 class="w-48">Password:</h3>
-                <input type="password" name="password" value="{{ user.password }}" class=" w-48 rounded-lg">
-            </div>
-            <div class="flex mb-4">
-                <h3 class="w-48">Confirm Password:</h3>
-                <input type="password" name="password_confirm" value="{{ initial_password_confirm }}" class=" w-48 rounded-lg">
-            </div> {% endcomment %}
+            <div class="max-w-96">{{ form | crispy }}</div>
             <div class="flex space-x-4 mt-4">
                 <button type="submit"
                         class="bg-teal-500 text-white hover:bg-white hover:text-cyan-500 border-2 border-cyan-500 cursor-pointer font-semibold rounded-lg px-2 py-0.5">

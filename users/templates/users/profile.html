@@ -4,21 +4,26 @@
 {% block content %}
     <div class="bg-blue-100 min-w-[52rem] mx-auto w-fit flex flex-1 flex-col px-24 xl:pt-12 2xl:pt-20 pb-20">
         <h1 class="mx-auto text-3xl font-bold mb-8">Profile Page</h1>
-        <img src="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg"
-             alt="profile picture"
-             class="w-60 h-60 object-cover rounded-full mx-auto mb-6">
-        <h1 class="mx-auto text-xl font-semibold mb-6">{{ user.first_name|default:user.username }}</h1>
+        <div class="relative w-60 h-60 mx-auto  mb-6">
+            <a class="opacity-0 hover:opacity-45 flex cursor-pointer w-60 h-60 object-cover rounded-full mx-auto mb-6 text-center bg-black items-center justify-center absolute z-30">
+                <p class="font-semibold text-white">Change Photo</p>
+            </a>
+            <img src="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg"
+                 alt="profile picture"
+                 class="w-60 h-60 object-cover rounded-full mx-auto relative z-20 cursor-pointer">
+        </div>
+        <h1 class="mx-auto text-xl font-semibold mb-6">{{ user.profile.first_name|default:user.username }}</h1>
         <div class="flex flex-col space-y-2 border border-black rounded-lg p-4 mb-4">
             <div class="flex justify-between align-middle items-center">
                 <h1 class="font-bold text-lg">Basic Information</h1>
-                <a href="/profile"
+                <a href="/profile/edit"
                    class="bg-cyan-500 text-white  hover:bg-white hover:text-cyan-500 border-2 border-cyan-500 cursor-pointer font-semibold rounded-lg px-2 py-0.5">Edit Profile</a>
             </div>
             <div class="flex">
                 <h3 class="w-48">First Name:</h3>
                 <p>
-                    {% if user.first_name %}
-                        {{ user.first_name }}
+                    {% if user.profile.first_name %}
+                        {{ user.profile.first_name }}
                     {% else %}
                         <em>Not set yet</em>
                     {% endif %}
@@ -27,24 +32,31 @@
             <div class="flex">
                 <h3 class="w-48">Last Name:</h3>
                 <p>
-                    {% if user.last_name %}
-                        {{ user.last_name }}
+                    {% if user.profile.last_name %}
+                        {{ user.profile.last_name }}
                     {% else %}
                         <em>Not set yet</em>
                     {% endif %}
                 </p>
             </div>
             <div class="flex">
-                <h3 class="w-48">Username:</h3>
-                <p>{{ user.username }}</p>
-            </div>
-            <div class="flex">
                 <h3 class="w-48">Email:</h3>
-                {% if user.email %}
-                    {{ user.email }}
+                {% if user.profile.email %}
+                    {{ user.profile.email }}
                 {% else %}
                     <em>Not set yet</em>
                 {% endif %}
+            </div>
+        </div>
+        <div class="flex flex-col space-y-2 border border-black rounded-lg p-4 mb-4">
+            <div class="flex justify-between align-middle items-center">
+                <h1 class="font-bold text-lg">Login Information</h1>
+                <a href="/login/edit"
+                   class="bg-cyan-500 text-white  hover:bg-white hover:text-cyan-500 border-2 border-cyan-500 cursor-pointer font-semibold rounded-lg px-2 py-0.5">Change password</a>
+            </div>
+            <div class="flex">
+                <h3 class="w-48">Username:</h3>
+                <p>{{ user.username }}</p>
             </div>
             <div class="flex">
                 <h3 class="w-48">Password:</h3>

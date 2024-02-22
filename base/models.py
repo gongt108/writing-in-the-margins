@@ -45,16 +45,19 @@ class Discussion(models.Model):
     ]
 
     title = models.CharField(max_length=100)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    content = models.CharField(default="")
     type = models.CharField(max_length=20, choices=DISCUSSION_TYPES)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
     last_update = models.DateTimeField()
-    num_posts = models.IntegerField()
+    num_posts = models.PositiveIntegerField()
+    date_created = models.DateTimeField(default=timezone.now)
 
 
 class Post(models.Model):
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
     pub_date = models.DateTimeField("date published", auto_now_add=True)

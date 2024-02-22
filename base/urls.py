@@ -17,5 +17,9 @@ urlpatterns = [
         views.forum_view,
         name="other-discussion",
     ),
+    path(
+        "discussion/<int:discussion_id>/", views.discussion_view, name="discussion-view"
+    ),
+    # path("discussion/", views.discussion_view, name="discussion"),
     path("search/", views.searchresults_view, name="search-view"),
 ]
