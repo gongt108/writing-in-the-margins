@@ -25,3 +25,16 @@ class ResponseForm(forms.Form):
         self.helper.form_show_labels = False
 
         self.fields["content"].label = ""
+
+
+class NewDiscussionForm(forms.Form):
+    DISCUSSION_TYPES = [
+        ("bookclub", "Book-club"),
+        ("general", "General"),
+    ]
+
+    title = forms.CharField(max_length=100)
+    content = forms.CharField(widget=forms.Textarea(attrs={"style": "resize: none;"}))
+    type = forms.ChoiceField(
+        choices=DISCUSSION_TYPES, widget=forms.Select(attrs={"class": "form-control"})
+    )

@@ -20,6 +20,7 @@ urlpatterns = [
     path(
         "discussion/<int:discussion_id>/", views.discussion_view, name="discussion-view"
     ),
+    path("discussion/new/", views.new_discussion_view, name="new-discussion"),
     # path("discussion/", views.discussion_view, name="discussion"),
     path("search/", views.searchresults_view, name="search-view"),
 ]

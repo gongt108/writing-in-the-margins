@@ -2,14 +2,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 import json
 import os
 import sys
 import subprocess
-from .forms import SearchForm, ResponseForm
-from .models import Book, Post, Discussion
+from .forms import SearchForm, ResponseForm, NewDiscussionForm
+from .models import Book, BookClub, Post, Discussion
+from users.models import Profile
 
 # Add the directory containing the Scrapy project to the Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "bookscraper"))
@@ -61,7 +63,6 @@ def searchresults_view(request):
         search_results = json.load(book_search_data)
 
     search_query = request.GET.get("search_query", "")
-    print("searchquery", search_query)
     form = SearchForm()
 
     if request.method == "POST":
@@ -77,10 +78,32 @@ def searchresults_view(request):
 
 
 def bookclub_view(request):
-    discussions = Discussion.objects.filter(
-        Q(type="bookclub") | Q(type="general"), object_id=2
-    )
-    return render(request, "book_club.html", {"discussions": discussions})
+    book_club = request.user.profile.book_club
+    if book_club is None:
+        bookclubs = BookClub.objects.all()
+        if request.method == "POST":
+            book_club_to_join_id = request.POST.get("book_club_to_join")
+            book_club_to_join = BookClub.objects.get(id=book_club_to_join_id)
+            # Update the user's profile with the new book club
+            request.user.profile.book_club = book_club_to_join
+            request.user.profile.save()
+
+            return HttpResponseRedirect(reverse("base:book-club"))
+
+        return render(request, "bookclub_join.html", {"bookclubs": bookclubs})
+
+    if book_club:
+        # bookclub = BookClub.objects.get(id=bookclub.id)
+        discussions = Discussion.objects.filter(
+            Q(type="bookclub") | Q(type="general"), object_id=book_club.id
+        ).order_by("-last_update")
+        members = Profile.objects.filter(book_club=book_club)
+
+        return render(
+            request,
+            "book_club.html",
+            {"bookclub": book_club, "discussions": discussions, "members": members},
+        )
 
 
 def book_view(request):
@@ -90,7 +113,17 @@ def book_view(request):
         subprocess.run(["python", "manage.py", "start_book_scraping", book_id])
         found_book = Book.objects.filter(book_id=book_id).first()
 
-    return render(request, "book_sample.html", {"found_book": found_book})
+    book_description = found_book.description.split("/n/n")
+    genre_list = found_book.genres.split(", ")
+    return render(
+        request,
+        "book_sample.html",
+        {
+            "book": found_book,
+            "book_description": book_description,
+            "genre_list": genre_list,
+        },
+    )
 
 
 def start_book_scraping(book_id):
@@ -106,11 +139,25 @@ def start_book_scraping(book_id):
 
 
 def chapterdiscussion_view(request):
-    return render(request, "chapter_discussion.html")
+    book_id = request.GET.get("book_id")
+    found_book = Book.objects.filter(book_id=book_id).first()
+    discussions = Discussion.objects.filter(type="chapter", object_id=1).order_by(
+        "-last_update"
+    )
+    for discussion in discussions:
+        discussion.chapter_title = discussion.title.split(" - ")[1]
+        discussion.title = discussion.title.split(" - ")[0]
+    return render(
+        request,
+        "chapter_discussion.html",
+        {"book": found_book, "discussions": discussions},
+    )
 
 
 def forum_view(request):
-    return render(request, "forum.html")
+    book_id = request.GET.get("book_id")
+    found_book = Book.objects.filter(book_id=book_id).first()
+    return render(request, "forum.html", {"book": found_book})
 
 
 def discussion_view(request, discussion_id):
@@ -121,6 +168,9 @@ def discussion_view(request, discussion_id):
     # discussion = get_object_or_404(Discussion, pk=discussion_id)
     discussion = Discussion.objects.get(id=discussion_id)
     posts = Post.objects.filter(discussion=discussion)
+    discussion.num_posts = len(posts)
+    discussion.last_update = posts.order_by("-pub_date")[0].pub_date
+    discussion.save()
 
     if request.method == "POST":
         if "delete_post_button" in request.POST:
@@ -134,21 +184,54 @@ def discussion_view(request, discussion_id):
             if form.is_valid():
                 content = form.cleaned_data["content"]
                 Post.objects.create(discussion=discussion, user=user, content=content)
-                print("post created")
+
                 return HttpResponseRedirect(
                     reverse("base:discussion-view", args=(discussion_id,))
                 )
-            else:
-                print("error posting")
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        print(f"Error in {field}: {error}")
+            # else:
+            #     print("error posting")
+            #     for field, errors in form.errors.items():
+            #         for error in errors:
+            #             print(f"Error in {field}: {error}")
 
     return render(
         request,
         "discussions/discussion.html",
         {"form": form, "discussion": discussion, "posts": posts},
     )
+
+
+def new_discussion_view(request):
+    form = NewDiscussionForm()
+    # Discussion.objects.create()
+    if request.method == "POST":
+        form = NewDiscussionForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            type = form.cleaned_data["type"]
+            # created_by = request.user
+            content_type = BookClub if request.GET.get("type") == "bookclub" else Book
+            content_type = ContentType.objects.get_for_model(content_type)
+            object_id = request.GET.get("object_id")
+
+            Discussion.objects.create(
+                title=title,
+                created_by=request.user,
+                content=content,
+                type=type,
+                content_type=content_type,
+                object_id=object_id,
+            )
+
+            return HttpResponseRedirect(
+                reverse(
+                    "base:book-club",
+                    # args=(discussion_id,)
+                )
+            )
+
+    return render(request, "forms/new_discussion_form.html", {"form": form})
 
 
 def get_posts_for_discussion(discussion_id):

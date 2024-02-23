@@ -60,55 +60,50 @@ class SaveToPostgresPipeline:
         )
 
     def process_item(self, item, spider):
-        self.cur.execute("select * from books where book_id = %s", (item["book_id"],))
-        result = self.cur.fetchone()
+        print("saving to db")
 
-        ## If it is in DB, create log message
-        if not result:
-            #     spider.logger.warn("Item already in database: %s" % item["text"])
-            # else:
-            ## Define insert statement
-            self.cur.execute(
-                """ insert into base_book (
-                book_cover,
-                title,
-                contributors,
-                avg_rating,
-                num_rating,
-                description,
-                genres,
-                page_num,
-                publication_date,
-                book_id
-                ) values (
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s
-                    
-                    )""",
-                (
-                    item["book_cover"],
-                    item["title"],
-                    item["contributors"],
-                    item["avg_rating"],
-                    item["num_rating"],
-                    item["description"],
-                    item["genres"],
-                    item["page_num"],
-                    item["publication_date"],
-                    item["book_id"],
-                ),
-            )
+        ## Define insert statement
+        self.cur.execute(
+            """ insert into base_book (
+            book_cover,
+            title,
+            contributors,
+            avg_rating,
+            num_rating,
+            description,
+            genres,
+            page_num,
+            publication_date,
+            book_id
+            ) values (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s
+                
+                )""",
+            (
+                item["book_cover"],
+                item["title"],
+                item["contributors"],
+                item["avg_rating"],
+                item["num_rating"],
+                item["description"],
+                item["genres"],
+                item["page_num"],
+                item["publication_date"],
+                item["book_id"],
+            ),
+        )
 
-            # ## Execute insert of data into database
-            self.connection.commit()
+        # ## Execute insert of data into database
+        self.connection.commit()
         return item
 
     def close_spider(self, spider):

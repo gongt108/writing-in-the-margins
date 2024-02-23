@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load tailwind_filters %}
+{% block content %}
+    <div class="bg-blue-100 h-full mx-auto min-w-fit flex flex-col px-24 pt-20">
+        <h1 class="font-bold text-3xl text-center mb-6">Find a Book Club</h1>
+        <div class="flex flex-col content-center text-center w-[36rem]">
+            <table class="border border-collapse">
+                <thead>
+                    <tr class="bg-slate-100 border">
+                        <td class="pl-2 border-b">Book Club</td>
+                        <td class="pl-2 border-b"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bookclub in bookclubs %}
+                        <tr class="border even:bg-slate-100">
+                            </>
+                            <td class="p-2 min-w-72">
+                                </>
+                                <div class="flex flex-col ">
+                                    <h3 class="font-semibold text-md hover:underline">{{ bookclub.name }}</h3>
+                                </div>
+                            </td>
+                            <td class="p-2">
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="book_club_to_join" value="{{ bookclub.id }}">
+                                    <button type="submit"
+                                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1 me-4">
+                                        Join
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

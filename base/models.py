@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -23,17 +24,24 @@ class Book(models.Model):
 
 class BookClub(models.Model):
     name = models.CharField(max_length=100)
+    link_id = models.CharField(max_length=255, unique=True)
     book_id = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
-    member_list = models.ForeignKey(
-        "MemberList", on_delete=models.CASCADE, related_name="book_club", null=True
-    )
     next_meeting_date = models.DateTimeField(null=True)
-    discussion_list_id = models.IntegerField(null=True)
+
+    def save(self, *args, **kwargs):
+        # Generate the link_id using the primary key (pk) and name
+        if not self.pk:
+            # Save the instance to get a primary key (pk)
+            super().save(*args, **kwargs)
+
+            self.link_id = f"{self.pk}-{slugify(self.name)}"
+        super().save(*args, **kwargs)
 
 
-class MemberList(models.Model):
+class Member(models.Model):
     is_admin = models.BooleanField(default=False, null=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book_club = models.ForeignKey(BookClub, on_delete=models.SET_NULL, null=True)
 
 
 class Discussion(models.Model):
@@ -51,8 +59,8 @@ class Discussion(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
-    last_update = models.DateTimeField()
-    num_posts = models.PositiveIntegerField()
+    last_update = models.DateTimeField(default=timezone.now)
+    num_posts = models.PositiveIntegerField(default=0)
     date_created = models.DateTimeField(default=timezone.now)
 
 

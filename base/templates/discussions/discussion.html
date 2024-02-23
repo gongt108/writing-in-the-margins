@@ -11,7 +11,7 @@
                 <div class="flex space-x-4">
                     <h3>Title: Crying in Hmart</h3>
                     <h3>Author: Michelle Zauner</h3>
-                    <h3>Replies: 0</h3>
+                    <h3>Replies: {{ discussion.num_posts }}</h3>
                 </div>
             </div>
             <div class="bg-slate-100 min-h-48 p-8 flex space-x-4 mb-8">
@@ -65,7 +65,7 @@
                     {{ form | crispy }}
                     <div class="flex justify-end mb-2">
                         <button type="submit"
-                                id="create_post_button"
+                                name="create_post_button"
                                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mt-2 ">
                             Post response
                         </button>

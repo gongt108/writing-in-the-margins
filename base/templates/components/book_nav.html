@@ -1,22 +1,21 @@
 <div class="flex space-x-4 w-full border-b border-gray-500 pb-1 mb-2">
     <ul>
         <li>
-            <a href="/book"
+            <a href="/book?book_id={{ book.book_id }}"
                class="no-underline hover:underline hover:text-teal-900 active:font-semibold active">Details</a>
         </li>
     </ul>
     <ul>
         <li>
-            <a href="/book/chapter-discussion"
+            <a href="/book/chapter-discussion?book_id={{ book.book_id }}"
                class="no-underline hover:underline hover:text-teal-900">Chapter Discussions</a>
         </li>
     </ul>
-    <ul>
+    {% comment %} <ul>
         <li>
-            <a href="/book/forum"
-               class="no-underline hover:underline hover:text-teal-900">Forum</a>
+            <a href="/book/forum?book_id={{ book.book_id }}" class="no-underline hover:underline hover:text-teal-900">Forum</a>
         </li>
-    </ul>
+    </ul> {% endcomment %}
     {% comment %} <ul>
         <li>
             <a href="#" class="no-underline hover:underline hover:text-teal-900">Reviews</a>

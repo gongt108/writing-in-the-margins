@@ -14,40 +14,38 @@
                         <tr class="bg-slate-100 border">
                             <td class="pl-2 border">Chapter</td>
                             <td class="pl-2 border">Last Updated</td>
-                            <td class="pl-2 border">Created by</td>
                             <td class="pl-2 border">Replies</td>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border">
-                            </>
-                            <td class="border pl-2">
+                        {% for discussion in discussions %}
+                            <tr class="border">
                                 </>
-                                <div class="flex flex-col ">
-                                    <a href="/book">
-                                        <h3 class="font-semibold text-lg hover:underline">Chapter 1 Discussion</h3>
-                                        <p class="font-light">Crying in H Mart</p>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="border pl-2">
-                                </>Today
-                            </td>
-                            <td class="border pl-2">
-                                </>Admin
-                            </td>
-                            <td class="border pl-2">
-                                <div class="flex items-center">
-                                    <svg class="h-8 w-8 text-gray-500"
-                                         fill="none"
-                                         viewBox="0 0 24 24"
-                                         stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                                    </svg>
-                                    <p class="h-full">2</p>
-                                </div>
-                            </td>
-                        </tr>
+                                <td class="border pl-2">
+                                    </>
+                                    <div class="flex flex-col ">
+                                        <a href="/discussion/{{ discussion.id }}">
+                                            <h3 class="font-semibold text-lg hover:underline">{{ discussion.title }}</h3>
+                                            <p class="font-light">{{ discussion.chapter_title }}</p>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td class="border pl-2">
+                                    </>{{ discussion.last_update }}
+                                </td>
+                                <td class="border pl-2">
+                                    <div class="flex items-center">
+                                        <svg class="h-8 w-8 text-gray-500"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                                        </svg>
+                                        <p class="h-full">{{ discussion.num_posts }}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
