@@ -10,9 +10,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 
 from .forms import ProfileUpdateForm, UserUpdateForm
+from base.models import Book
 
 
 # Create your views here.
@@ -127,16 +129,29 @@ def shelf_view(request, shelf):
     profile = request.user.profile
     if shelf == "read_list":
         list_name = "Read"
-        results = profile.read_list.all()
+        current_list = profile.read_list
     elif shelf == "reading_list":
         list_name = "Currently Reading"
-        results = profile.reading_list.all()
+        current_list = profile.reading_list
     elif shelf == "tbr_list":
         list_name = "Want to Read"
-        results = profile.tbr_list.all()
+        current_list = profile.tbr_list
     else:
         # Handle invalid shelf values (optional)
         results = None
+
+    if current_list:
+        results = current_list.all()
+
+    if request.method == "POST":
+        book_to_remove = Book.objects.get(book_id=request.POST["book_id_to_remove"])
+        # Assuming current_list is a ManyToManyField related queryset
+        current_list.remove(book_to_remove)
+
+        # Save the changes
+        profile.save()
+
+        return HttpResponseRedirect(reverse("shelf-view", args=(shelf,)))
 
     return render(
         request,
