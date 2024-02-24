@@ -68,6 +68,7 @@ def login_view(request):
 @login_required
 def profile_view(request):
     user = request.user
+    print(user.profile)
     return render(request, "users/profile.html", {"user": user})
 
 
@@ -119,6 +120,29 @@ def login_edit_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect("/")
+
+
+@login_required
+def shelf_view(request, shelf):
+    profile = request.user.profile
+    if shelf == "read_list":
+        list_name = "Read"
+        results = profile.read_list.all()
+    elif shelf == "reading_list":
+        list_name = "Currently Reading"
+        results = profile.reading_list.all()
+    elif shelf == "tbr_list":
+        list_name = "Want to Read"
+        results = profile.tbr_list.all()
+    else:
+        # Handle invalid shelf values (optional)
+        results = None
+
+    return render(
+        request,
+        "bookshelf.html",
+        {"user": request.user, "list_name": list_name, "results": results},
+    )
 
 
 def card(request):

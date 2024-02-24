@@ -3,13 +3,16 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
+from datetime import datetime
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 import json
 import os
 import sys
 import subprocess
-from .forms import SearchForm, ResponseForm, NewDiscussionForm
+from .forms import SearchForm, ResponseForm, NewDiscussionForm, AddToListForm
 from .models import Book, BookClub, Post, Discussion
 from users.models import Profile
 
@@ -21,6 +24,7 @@ from bookscraper.bookscraper.spiders.bookspider import BookSpider
 
 # Create your views here.
 def home(request):
+    print(request.user.profile.tbr_list.all())
     if request.user:
         print(request.user.is_authenticated)
     if request.method == "POST":
@@ -99,7 +103,21 @@ def bookclub_view(request):
         ).order_by("-last_update")
         members = Profile.objects.filter(book_club=book_club)
         admins = members.filter(bookclub_admin=True)
-        print(admins)
+        if request.method == "POST":
+            next_meeting_date = request.POST["datepicker"]
+            next_meeting_date = datetime.strptime(next_meeting_date, "%m/%d/%Y")
+            print(next_meeting_date)
+            book_club.next_meeting_date = next_meeting_date
+            book_club.save()
+
+        print(book_club.next_meeting_date)
+
+        if (
+            book_club.next_meeting_date is not None
+            and timezone.make_aware(book_club.next_meeting_date) < timezone.now()
+        ):
+            book_club.next_meeting_date = None
+            book_club.save()
 
         return render(
             request,
@@ -108,15 +126,35 @@ def bookclub_view(request):
         )
 
 
-def book_view(request):
-    book_id = request.GET.get("book_id")
+def book_view(request, book_id):
+    # book_id = request.GET.get("book_id")
     found_book = Book.objects.filter(book_id=book_id).first()
     if not found_book:
         subprocess.run(["python", "manage.py", "start_book_scraping", book_id])
         found_book = Book.objects.filter(book_id=book_id).first()
 
+    bookshelf = get_list_containing_book(request, found_book)
+    print("bookshelf", bookshelf)
+
     book_description = found_book.description.split("/n/n")
     genre_list = found_book.genres.split(", ")
+
+    atl_form = AddToListForm(initial={"shelf": bookshelf})
+    atl_choices = atl_form.fields["shelf"].choices
+
+    if request.method == "POST":
+        if "save_book_list" in request.POST:
+            print("saving to list")
+            atl_form = AddToListForm(request.POST)
+            # if atl_form.is_valid():
+            #     shelf = atl_form.cleaned_data["shelf"]
+            #     print(shelf)
+            handle_book_list(request, atl_form, found_book, bookshelf)
+        elif "save_notification_button" in request.POST:
+            # handle_notification_list(request, atl_form, found_book)
+            print("saved notification")
+        return HttpResponseRedirect(reverse("base:book-view", args=(book_id,)))
+
     return render(
         request,
         "book_sample.html",
@@ -124,8 +162,39 @@ def book_view(request):
             "book": found_book,
             "book_description": book_description,
             "genre_list": genre_list,
+            "bookshelf": bookshelf,
+            "atl_form": atl_form,
+            "atl_choices": atl_choices,
         },
     )
+
+
+def handle_book_list(request, form, book, bookshelf):
+    if form.is_valid():
+        if bookshelf is not None:
+            getattr(request.user.profile, bookshelf).remove(book)
+        new_shelf = form.cleaned_data["shelf"]
+        getattr(request.user.profile, new_shelf).add(book)
+
+        request.user.profile.save()
+
+
+def handle_notification_list(request, form, book):
+    print("saved notification")
+
+
+def get_list_containing_book(request, book):
+    profile = get_object_or_404(Profile, user=request.user)
+    # book = get_object_or_404(Book, book_id=book_id)
+    # Check if the book is in any of the lists
+    if book in profile.read_list.all():
+        return "read_list"
+    elif book in profile.reading_list.all():
+        return "reading_list"
+    elif book in profile.tbr_list.all():
+        return "tbr_list"
+    else:
+        return None
 
 
 def start_book_scraping(book_id):
@@ -140,8 +209,8 @@ def start_book_scraping(book_id):
     process.start()
 
 
-def chapterdiscussion_view(request):
-    book_id = request.GET.get("book_id")
+def chapterdiscussion_view(request, book_id):
+    # book_id = request.GET.get("book_id")
     found_book = Book.objects.filter(book_id=book_id).first()
     discussions = Discussion.objects.filter(type="chapter", object_id=1).order_by(
         "-last_update"
@@ -171,30 +240,30 @@ def discussion_view(request, discussion_id):
     discussion = Discussion.objects.get(id=discussion_id)
     posts = Post.objects.filter(discussion=discussion)
     discussion.num_posts = len(posts)
-    discussion.last_update = posts.order_by("-pub_date")[0].pub_date
+    if posts:
+        discussion.last_update = posts.order_by("-pub_date")[0].pub_date
     discussion.save()
 
     if request.method == "POST":
-        if "delete_post_button" in request.POST:
-            post_id_to_delete = request.POST["post_id_to_delete"]
-            post_to_delete = Post.objects.get(id=post_id_to_delete)
-            post_to_delete.delete()
         if not user.is_authenticated:
             print("You must login first.")
-        elif "create_post_button" in request.POST and user.is_authenticated:
-            form = ResponseForm(request.POST)
-            if form.is_valid():
-                content = form.cleaned_data["content"]
-                Post.objects.create(discussion=discussion, user=user, content=content)
+        else:
+            if "delete_post_button" in request.POST:
+                post_id_to_delete = request.POST["post_id_to_delete"]
+                post_to_delete = Post.objects.get(id=post_id_to_delete)
+                post_to_delete.delete()
 
-                return HttpResponseRedirect(
-                    reverse("base:discussion-view", args=(discussion_id,))
-                )
-            # else:
-            #     print("error posting")
-            #     for field, errors in form.errors.items():
-            #         for error in errors:
-            #             print(f"Error in {field}: {error}")
+            elif "create_post_button" in request.POST and user.is_authenticated:
+                form = ResponseForm(request.POST)
+                if form.is_valid():
+                    content = form.cleaned_data["content"]
+                    Post.objects.create(
+                        discussion=discussion, user=user, content=content
+                    )
+
+            return HttpResponseRedirect(
+                reverse("base:discussion-view", args=(discussion_id,))
+            )
 
     return render(
         request,

@@ -373,6 +373,31 @@ textarea {
 	resize: vertical;
 }
 
+/* Hide the default radio button */
+input[type='radio'] {
+	/* visibility: hidden; */
+}
+
+.atl-form {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Style the label text */
+.atl-form label {
+	font-size: 24px;
+	color: #333;
+	border: 1px solid black;
+	padding: 0.5rem 2rem;
+	border-radius: 2rem;
+	width: 50%;
+	margin: 0 auto 1rem;
+}
+
+input[type='radio']:checked {
+	background-color: teal; /* Change color to teal */
+}
+
 /*
 1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
 2. Set the default placeholder color to the user's configured gray 400 color.

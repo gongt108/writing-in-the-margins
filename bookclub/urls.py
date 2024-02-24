@@ -26,6 +26,7 @@ urlpatterns = [
     path("login/", user_view.login_view, name="login"),
     path("login/edit/", user_view.login_edit_view, name="login-edit"),
     path("profile/edit/", user_view.profile_edit_view, name="profile-edit"),
+    path("profile/<str:shelf>/", user_view.shelf_view, name="shelf-view"),
     path("profile/", user_view.profile_view, name="profile"),
     path("logout/", user_view.logout_view, name="logout"),
     path("card/", user_view.card, name="card"),

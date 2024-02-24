@@ -38,3 +38,26 @@ class NewDiscussionForm(forms.Form):
     type = forms.ChoiceField(
         choices=DISCUSSION_TYPES, widget=forms.Select(attrs={"class": "form-control"})
     )
+
+
+class AddToListForm(forms.Form):
+    OPTIONS = (
+        ("read_list", "Read"),
+        ("reading_list", "Currently Reading"),
+        ("tbr_list", "TBR"),
+    )
+    shelf = forms.ChoiceField(choices=OPTIONS, widget=forms.Select)
+
+    def __init__(self, *args, **kwargs):
+        # bookshelf = kwargs.pop("bookshelf", None)  # Get the value of bookshelf
+        super(AddToListForm, self).__init__(*args, **kwargs)
+
+        # print("Initial value of shelf field:", self.fields["shelf"].initial)
+
+        # if bookshelf is not None:  # Set the initial value if bookshelf is provided
+        #     self.fields["shelf"].initial = bookshelf
+        #     print("Initial value of shelf field 2:", self.fields["shelf"].initial)
+
+        self.helper = FormHelper(self)
+        self.helper.form_show_labels = False
+        self.fields["shelf"].label = ""
