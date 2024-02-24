@@ -98,6 +98,8 @@ def bookclub_view(request):
             Q(type="bookclub") | Q(type="general"), object_id=book_club.id
         ).order_by("-last_update")
         members = Profile.objects.filter(book_club=book_club)
+        admins = members.filter(bookclub_admin=True)
+        print(admins)
 
         return render(
             request,
