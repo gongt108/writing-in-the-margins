@@ -373,31 +373,6 @@ textarea {
 	resize: vertical;
 }
 
-/* Hide the default radio button */
-input[type='radio'] {
-	/* visibility: hidden; */
-}
-
-.atl-form {
-	display: flex;
-	flex-direction: column;
-}
-
-/* Style the label text */
-.atl-form label {
-	font-size: 24px;
-	color: #333;
-	border: 1px solid black;
-	padding: 0.5rem 2rem;
-	border-radius: 2rem;
-	width: 50%;
-	margin: 0 auto 1rem;
-}
-
-input[type='radio']:checked {
-	background-color: teal; /* Change color to teal */
-}
-
 /*
 1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
 2. Set the default placeholder color to the user's configured gray 400 color.
@@ -867,6 +842,43 @@ video {
 	background-repeat: no-repeat;
 }
 
+.loader {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f7f9fb;
+	transition: opacity 0.75s, visibility 0.75s;
+}
+
+.loader-hidden {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.loader::after {
+	content: '';
+	width: 75px;
+	height: 75px;
+	border: 15px solid #dddddd;
+	border-top-color: #7449f5;
+	border-radius: 50%;
+	animation: loading 0.75s ease infinite;
+}
+
+@keyframes loading {
+	from {
+		transform: rotate(0turn);
+	}
+	to {
+		transform: rotate(1turn);
+	}
+}
+
 .object-cover {
 	-o-object-fit: cover;
 	object-fit: cover;
@@ -996,10 +1008,6 @@ video {
 .focus\:ring-gray-200:focus {
 	--tw-ring-opacity: 1;
 	--tw-ring-color: rgb(229 231 235 / var(--tw-ring-opacity));
-}
-
-span.datepicker-cell.dark {
-	color: black !important;
 }
 
 @media (min-width: 768px) {

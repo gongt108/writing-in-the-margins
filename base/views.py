@@ -117,10 +117,11 @@ def bookclub_view(request):
             book_club.save()
 
         print(book_club.next_meeting_date)
+        print(timezone.now())
 
         if (
             book_club.next_meeting_date is not None
-            and timezone.make_aware(book_club.next_meeting_date) < timezone.now()
+            and book_club.next_meeting_date < timezone.now()
         ):
             book_club.next_meeting_date = None
             book_club.save()
