@@ -141,8 +141,11 @@ def book_view(request, book_id):
         found_book = Book.objects.filter(book_id=book_id).first()
 
     bookshelf = get_list_containing_book(request, found_book)
+    print(found_book)
 
-    book_description = found_book.description.split("/n/n")
+    book_description = found_book.description
+    if book_description is not None:
+        book_description = book_description.split("/n/n")
     genre_list = found_book.genres.split(", ")
 
     atl_form = AddToListForm(initial={"shelf": bookshelf})

@@ -16,8 +16,10 @@ class BookscraperPipeline:
             list = adapter.get(short_list_key)
             if len(list) > 1:
                 adapter[short_list_key] = ", ".join(list)
-            else:
+            elif len(list) == 1:
                 adapter[short_list_key] = list[0]
+            else:
+                adapter[short_list_key] = ""
 
         description = adapter.get("description")
         adapter["description"] = "/n/n".join(description)
