@@ -124,6 +124,30 @@ def logout_view(request):
     return HttpResponseRedirect("/")
 
 
+def account_delete(request):
+    form = AuthenticationForm()
+    if request.method == "POST":
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            u = form.cleaned_data["username"]
+            p = form.cleaned_data["password"]
+            user = authenticate(username=u, password=p)
+
+            if user.is_active:
+                user.delete()
+                login(request)
+                return HttpResponseRedirect("/")
+            else:
+                error_message = "Your account is inactive."
+                return render(
+                    request,
+                    "users/account_delete.html",
+                    {"form": form, "error_message": error_message},
+                )
+
+    return render(request, "users/account_delete.html", {"form": form})
+
+
 @login_required
 def shelf_view(request, shelf):
     profile = request.user.profile
