@@ -1,6 +1,16 @@
 # Scrapy settings for bookscraper project
 BOT_NAME = "bookscraper"
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# SCRAPEOPS_API_KEY = os.getenv("SCRAPEOPS_API_KEY ")
+# print("SCRAPEOPS_API_KEY", SCRAPEOPS_API_KEY)
+SCRAPEOPS_PROXY_ENABLED = True
+# SCRAPEOPS_NUM_RESULTS = 5
+
 SPIDER_MODULES = ["bookscraper.spiders"]
 NEWSPIDER_MODULE = "bookscraper.spiders"
 
@@ -14,7 +24,7 @@ FEEDS = {"booksdata.json": {"format": "json"}}
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-# CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 1
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -47,6 +57,7 @@ ROBOTSTXT_OBEY = False
 DOWNLOADER_MIDDLEWARES = {
     #    "bookscraper.middlewares.BookscraperDownloaderMiddleware": 543,
     # "bookscraper.middlewares.ScrapeOpsFakeBrowserHeaderAgentMiddleware": 400,
+    "scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk": 725,
 }
 
 # Enable or disable extensions
