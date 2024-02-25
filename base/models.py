@@ -69,3 +69,10 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     content = models.TextField(null=True, blank=True)
     pub_date = models.DateTimeField("date published", auto_now_add=True)
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    price = models.IntegerField()
+    email = models.CharField(default="")

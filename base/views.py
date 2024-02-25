@@ -12,8 +12,14 @@ import json
 import os
 import sys
 import subprocess
-from .forms import SearchForm, ResponseForm, NewDiscussionForm, AddToListForm
-from .models import Book, BookClub, Post, Discussion
+from .forms import (
+    SearchForm,
+    ResponseForm,
+    NewDiscussionForm,
+    AddToListForm,
+    CreateOrEditNotificationForm,
+)
+from .models import Book, BookClub, Post, Discussion, Notification
 from users.models import Profile
 
 # Add the directory containing the Scrapy project to the Python path
@@ -134,25 +140,25 @@ def book_view(request, book_id):
         found_book = Book.objects.filter(book_id=book_id).first()
 
     bookshelf = get_list_containing_book(request, found_book)
-    print("bookshelf", bookshelf)
 
     book_description = found_book.description.split("/n/n")
     genre_list = found_book.genres.split(", ")
 
     atl_form = AddToListForm(initial={"shelf": bookshelf})
-    atl_choices = atl_form.fields["shelf"].choices
+    coen_form = CreateOrEditNotificationForm()
+    existing_notification = Notification.objects.filter(
+        user=request.user, book=found_book
+    ).first()
 
     if request.method == "POST":
         if "save_book_list" in request.POST:
-            print("saving to list")
+
             atl_form = AddToListForm(request.POST)
-            # if atl_form.is_valid():
-            #     shelf = atl_form.cleaned_data["shelf"]
-            #     print(shelf)
             handle_book_list(request, atl_form, found_book, bookshelf)
         elif "save_notification_button" in request.POST:
-            # handle_notification_list(request, atl_form, found_book)
-            print("saved notification")
+            coen_form = CreateOrEditNotificationForm(request.POST)
+            handle_notification_list(request, coen_form, found_book)
+
         return HttpResponseRedirect(reverse("base:book-view", args=(book_id,)))
 
     return render(
@@ -164,7 +170,8 @@ def book_view(request, book_id):
             "genre_list": genre_list,
             "bookshelf": bookshelf,
             "atl_form": atl_form,
-            "atl_choices": atl_choices,
+            "coen_form": coen_form,
+            "existing_notification": existing_notification,
         },
     )
 
@@ -180,7 +187,25 @@ def handle_book_list(request, form, book, bookshelf):
 
 
 def handle_notification_list(request, form, book):
-    print("saved notification")
+    user = request.user
+    price = request.POST["price"]
+    email = request.POST["email"]
+
+    existing_notification = Notification.objects.filter(user=user, book=book).first()
+
+    if form.is_valid():
+        if existing_notification:
+            existing_notification.price = price
+            existing_notification.email = email
+            existing_notification.save()
+        else:
+            new_notification = Notification.objects.create(
+                user=user, price=price, email=email, book=book
+            )
+            request.user.profile.notifications_list.add(new_notification)
+            request.user.profile.save()
+    else:
+        print(form.errors)
 
 
 def get_list_containing_book(request, book):

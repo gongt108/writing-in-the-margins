@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from .models import Book, BookClub, Discussion, Post, Member
+from .models import Book, BookClub, Discussion, Post, Notification
 
 
 # Register your models here.
@@ -44,3 +44,4 @@ admin.site.register(BookClub, BookClubAdmin)
 admin.site.register(Discussion)
 admin.site.register(Post)
 admin.site.register(Book)
+admin.site.register(Notification)

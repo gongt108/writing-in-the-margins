@@ -61,3 +61,8 @@ class AddToListForm(forms.Form):
         self.helper = FormHelper(self)
         self.helper.form_show_labels = False
         self.fields["shelf"].label = ""
+
+
+class CreateOrEditNotificationForm(forms.Form):
+    price = forms.IntegerField()
+    email = forms.CharField()

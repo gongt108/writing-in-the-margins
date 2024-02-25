@@ -70,7 +70,6 @@ def login_view(request):
 @login_required
 def profile_view(request):
     user = request.user
-    print(user.profile)
     return render(request, "users/profile.html", {"user": user})
 
 
@@ -158,6 +157,37 @@ def shelf_view(request, shelf):
         "bookshelf.html",
         {"user": request.user, "list_name": list_name, "results": results},
     )
+
+
+@login_required
+def notification_view(request):
+    profile = request.user.profile
+    notifications_list = profile.notifications_list.all()
+
+    # print(notifications_list)
+
+    if notifications_list:
+        results = notifications_list.all()
+
+    for item in notifications_list:
+        print(item.book.book_cover)
+
+    # if request.method == "POST":
+    #     book_to_remove = Book.objects.get(book_id=request.POST["book_id_to_remove"])
+    #     # Assuming current_list is a ManyToManyField related queryset
+    #     current_list.remove(book_to_remove)
+
+    #     # Save the changes
+    #     profile.save()
+
+    #     return HttpResponseRedirect(reverse("shelf-view", args=(shelf,)))
+
+    # return render(
+    #     request,
+    #     "bookshelf.html",
+    #     {"user": request.user, "list_name": list_name, "results": results},
+    # )
+    return render(request, "notification_list.html", {"results": notifications_list})
 
 
 def card(request):

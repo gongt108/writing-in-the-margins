@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from base.models import BookClub, Book
+from base.models import BookClub, Book, Notification
 
 
 # Create your models here.
@@ -15,6 +15,10 @@ class Profile(models.Model):
     read_list = models.ManyToManyField(Book, blank=True, related_name="read_list")
     reading_list = models.ManyToManyField(Book, blank=True, related_name="reading_list")
     tbr_list = models.ManyToManyField(Book, blank=True, related_name="tbr_list")
+    notifications_list = models.ManyToManyField(
+        Notification,
+        blank=True,
+    )
 
 
 # Intermediary models
