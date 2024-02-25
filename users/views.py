@@ -14,7 +14,8 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 
 from .forms import ProfileUpdateForm, UserUpdateForm
-from base.models import Book
+from base.models import Book, Notification
+from base.forms import CreateOrEditNotificationForm
 
 
 # Create your views here.
@@ -163,31 +164,42 @@ def shelf_view(request, shelf):
 def notification_view(request):
     profile = request.user.profile
     notifications_list = profile.notifications_list.all()
+    coen_form = CreateOrEditNotificationForm()
 
-    # print(notifications_list)
+    if request.method == "POST":
+        notification_id_to_delete_or_edit = request.POST[
+            "notification_to_delete_or_edit"
+        ]
+        notification_to_delete_or_edit = Notification.objects.get(
+            id=notification_id_to_delete_or_edit
+        )
+        if "remove_notification_button" in request.POST:
+            notification_to_delete_or_edit.delete()
+        elif "edit_notification_button" in request.POST:
+            coen_form = CreateOrEditNotificationForm(request.POST)
+            user = request.user
+            price = request.POST["price"]
+            email = request.POST["email"]
 
-    if notifications_list:
-        results = notifications_list.all()
+            if coen_form.is_valid():
+                notification_to_delete_or_edit.price = price
+                notification_to_delete_or_edit.email = email
+                notification_to_delete_or_edit.save()
 
-    for item in notifications_list:
-        print(item.book.book_cover)
-
-    # if request.method == "POST":
-    #     book_to_remove = Book.objects.get(book_id=request.POST["book_id_to_remove"])
-    #     # Assuming current_list is a ManyToManyField related queryset
-    #     current_list.remove(book_to_remove)
-
-    #     # Save the changes
-    #     profile.save()
-
-    #     return HttpResponseRedirect(reverse("shelf-view", args=(shelf,)))
+            else:
+                print(coen_form.errors)
+        return HttpResponseRedirect(reverse("notifications-list"))
 
     # return render(
     #     request,
     #     "bookshelf.html",
     #     {"user": request.user, "list_name": list_name, "results": results},
     # )
-    return render(request, "notification_list.html", {"results": notifications_list})
+    return render(
+        request,
+        "notification_list.html",
+        {"results": notifications_list, "coen_form": coen_form},
+    )
 
 
 def card(request):
