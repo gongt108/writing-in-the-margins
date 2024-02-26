@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from datetime import datetime
+from datetime import datetime, time
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 import json
@@ -26,13 +26,12 @@ from users.models import Profile
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "bookscraper"))
 from bookscraper.bookscraper.spiders.resultspider import ResultSpider
 from bookscraper.bookscraper.spiders.bookspider import BookSpider
+from bookscraper.bookscraper.spiders.pricespider import AmazonSearchProductSpider
 
 
 # Create your views here.
 def home(request):
-    print(request.user.profile.tbr_list.all())
-    if request.user:
-        print(request.user.is_authenticated)
+    test_daily()
     if request.method == "POST":
         form = SearchForm(request.POST)
         return handle_search_form(request, form)
@@ -337,3 +336,61 @@ def new_discussion_view(request):
 def get_posts_for_discussion(discussion_id):
     posts = Post.objects.filter(discussion=discussion_id)
     return posts
+
+
+import re
+from django.core.mail import send_mail
+import shutil
+
+
+def test_daily():
+    # Directory containing the files
+    directory = "data/"
+    if os.path.exists(directory):
+        # List all files in the directory
+        files = os.listdir(directory)
+
+        # Iterate through each file
+        for file_name in files:
+            # Extract the time portion using regular expressions
+            last_update = file_name.split("_")[2].split(".")[0]
+
+    else:
+        last_update = "2000-01-01"
+    if str(timezone.now().date()) != last_update:
+        if os.path.exists("data/"):
+            shutil.rmtree("data/")
+        subprocess.run(["python", "manage.py", "daily_price_scraping"])
+        first_file = os.listdir("data/")[0]
+        file_path = os.path.join("data/", first_file)
+
+        with open(f"{file_path}") as email_list:
+            email_list = json.load(email_list)
+
+        for item in email_list:
+            subject = f"Price drop notification for {item['name']}"
+            message = f"A book on your watch list has dropped below its target price.\n\nBook: {item['name']}\n\nPrice: ${item['price']}"
+            recipient = [item["email"]]
+
+            print(subject)
+
+            send_mail(subject, message, "settings.EMAIL_HOST_USER", recipient)
+    else:
+        print("email list has gone out for today.")
+
+    # print(timezone.now().time() == target_time)
+
+
+def daily_price_scraping():
+    process = CrawlerProcess(
+        settings={
+            "FEEDS": {"dailyprice.json": {"format": "json", "overwrite": True}},
+            "DOWNLOADER_MIDDLEWARES": {
+                "scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk": 610,
+            },
+            "SCRAPEOPS_API_KEY": "84624c6b-0aa5-475a-91d2-116ba96de156",
+            "SCRAPEOPS_PROXY_ENABLED": True,
+        }
+    )
+    process.crawl(AmazonSearchProductSpider)
+    process.start()

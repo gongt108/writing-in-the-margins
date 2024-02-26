@@ -8,9 +8,9 @@ from bs4 import BeautifulSoup
 import urllib.parse
 
 
-# from bookscraper.bookscraper.items import ResultItem, BookItem
+from bookscraper.bookscraper.items import ResultItem, BookItem
 
-from bookscraper.items import BookItem
+# from bookscraper.items import BookItem
 
 
 class BookSpider(scrapy.Spider):

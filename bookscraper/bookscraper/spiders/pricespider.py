@@ -1,25 +1,31 @@
 import json
 import scrapy
 import urllib.parse
+from django.utils import timezone
 
 # from urllib.parse import urljoin
 import re
 import psycopg2
 
-# from bookscraper.bookscraper.items import AmazonItem
+from bookscraper.bookscraper.items import AmazonItem
 
-from bookscraper.items import AmazonItem
+# from bookscraper.items import AmazonItem
 
 
 class AmazonSearchProductSpider(scrapy.Spider):
     name = "price_spider"
+    date = str(timezone.now().date())
 
     custom_settings = {
         "FEEDS": {
-            "data/%(name)s_%(time)s.csv": {
-                "format": "csv",
+            f"data/%(name)s_{date}.json": {
+                "format": "json",
             }
-        }
+        },
+        "ITEM_PIPELINES": {
+            "bookscraper.bookscraper.pipelines.AmazonscraperPipeline": 300,
+            # "bookscraper.pipelines.EmailUserPipeline": 400,
+        },
     }
 
     def __init__(self):
@@ -51,7 +57,7 @@ class AmazonSearchProductSpider(scrapy.Spider):
             contributors = notification[1].split(",")
             target_price = notification[2]
             email = notification[3]
-            keyword = f"{title} by {contributors[0]} paperback"
+            keyword = f"{title} by {contributors[0]}"
             parsed_keyword = urllib.parse.quote_plus(keyword)
 
             amazon_search_url = f"https://www.amazon.com/s?k={parsed_keyword}"
@@ -79,11 +85,11 @@ class AmazonSearchProductSpider(scrapy.Spider):
         dollar = product.css("span.a-price-whole::text").get("")
         cent = product.css("span.a-price-fraction::text").get("")
 
-        if dollar is not None and int(dollar) < target_price:
+        if dollar and dollar.isdigit() and int(dollar) < target_price:
             amazon_item["name"] = (
                 product.css("h2.a-size-mini span.a-size-medium::text").get("").strip()
             )
-            amazon_item["price"] = int(dollar) + float(cent) / 100
+            amazon_item["price"] = f"{dollar}.{cent}"
             amazon_item["email"] = response.meta["email"]
 
             yield amazon_item

@@ -8,6 +8,7 @@ load_dotenv()
 
 # SCRAPEOPS_API_KEY = os.getenv("SCRAPEOPS_API_KEY ")
 # print("SCRAPEOPS_API_KEY", SCRAPEOPS_API_KEY)
+SCRAPEOPS_API_KEY = "84624c6b-0aa5-475a-91d2-116ba96de156"
 SCRAPEOPS_PROXY_ENABLED = True
 # SCRAPEOPS_NUM_RESULTS = 5
 
@@ -99,7 +100,10 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
-# using mailtrap.io
-EMAIL_HOST = "sandbox.smtp.mailtrap.io"
-EMAIL_HOST_USER = "32554d4b4bcda9"
-EMAIL_PORT = "2525"
+# Configure SMTP settings
+MAIL_FROM = "gongt108@gmail.com"
+MAIL_HOST = "smtp.gmail.com"
+MAIL_PORT = 587  # or 25, 465 (SSL)
+MAIL_USERNAME = "gongt108"
+MAIL_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+MAIL_TLS = True  # Set to False if you're using SSL

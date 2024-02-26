@@ -37,4 +37,3 @@ class AmazonItem(scrapy.Item):
     name = scrapy.Field()
     price = scrapy.Field()
     email = scrapy.Field()
-    book_type = scrapy.Field()

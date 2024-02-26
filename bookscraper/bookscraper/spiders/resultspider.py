@@ -7,9 +7,9 @@ from multiprocessing import Process, Queue
 
 import urllib.parse
 
-# from bookscraper.bookscraper.items import ResultItem, BookItem
+from bookscraper.bookscraper.items import ResultItem, BookItem
 
-from bookscraper.items import ResultItem, BookItem
+# from bookscraper.items import ResultItem, BookItem
 
 
 class ResultSpider(scrapy.Spider):

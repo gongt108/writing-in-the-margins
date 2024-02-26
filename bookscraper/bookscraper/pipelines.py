@@ -1,12 +1,7 @@
 # Define your item pipelines here
 from itemadapter import ItemAdapter
 import os
-from base.models import Notification
 from django.core.mail import send_mail
-
-
-key = "DB_PASSWORD"
-db_password = os.getenv(key)
 
 
 class BookscraperPipeline:
@@ -120,24 +115,40 @@ class AmazonscraperPipeline:
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
 
-        price = adapter.get("price")
-        adapter["price"] = f"${price}"
-
         adapter["name"] = adapter.get("name")
+        adapter["price"] = adapter.get("price")
         adapter["email"] = adapter.get("email")
-        adapter["book_type"] = adapter.get("book_type")
 
         return item
 
 
-class EmailUserPipeline:
-    def __init__(self, item):
-        self.price = item["price"]
-        self.name = item["name"]
-        self.email = item["email"]
-        self.book_type = item["book_type"]
+# from scrapy.mail import MailSender
 
-    def send_email(self, item):
-        subject = f"Price drop notification for {self.name}"
-        message = f"A book on your watch list has dropped below its target price.\n\nBook: {self.name}\n\nPrice: {self.price}\n\nVersion: {self.book_type}"
-        send_mail(subject, message, "settings.EMAIL_HOST_USER", self.email)
+# key = "EMAIL_HOST_PASSWORD"
+# db_password = os.getenv(key)
+# print(db_password)
+
+
+# class EmailUserPipeline:
+
+#     def send_email(self, item):
+#         mailer = MailSender()
+
+#         price = item["price"]
+#         name = item["name"]
+#         email = item["email"]
+
+#         subject = f"Price drop notification for {name}"
+#         message = f"A book on your watch list has dropped below its target price.\n\nBook: {name}\n\nPrice: {price}"
+
+#         print(f"message sent to{email}")
+#         try:
+#             # Send email
+#             mailer.send(
+#                 to=[email],
+#                 subject=subject,
+#                 body=message,
+#             )
+#             return f"message sent to{email}"
+#         except Exception as e:
+#             return {"success": False, "error": str(e)}
