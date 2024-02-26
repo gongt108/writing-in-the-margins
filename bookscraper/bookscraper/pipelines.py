@@ -1,10 +1,12 @@
 # Define your item pipelines here
 from itemadapter import ItemAdapter
 import os
+from base.models import Notification
+from django.core.mail import send_mail
+
 
 key = "DB_PASSWORD"
 db_password = os.getenv(key)
-print("db_password", db_password)
 
 
 class BookscraperPipeline:
@@ -112,3 +114,30 @@ class SaveToPostgresPipeline:
         ## Close cursor & connection to database
         self.cur.close()
         self.connection.close()
+
+
+class AmazonscraperPipeline:
+    def process_item(self, item, spider):
+        adapter = ItemAdapter(item)
+
+        price = adapter.get("price")
+        adapter["price"] = f"${price}"
+
+        adapter["name"] = adapter.get("name")
+        adapter["email"] = adapter.get("email")
+        adapter["book_type"] = adapter.get("book_type")
+
+        return item
+
+
+class EmailUserPipeline:
+    def __init__(self, item):
+        self.price = item["price"]
+        self.name = item["name"]
+        self.email = item["email"]
+        self.book_type = item["book_type"]
+
+    def send_email(self, item):
+        subject = f"Price drop notification for {self.name}"
+        message = f"A book on your watch list has dropped below its target price.\n\nBook: {self.name}\n\nPrice: {self.price}\n\nVersion: {self.book_type}"
+        send_mail(subject, message, "settings.EMAIL_HOST_USER", self.email)
