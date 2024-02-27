@@ -244,9 +244,10 @@ def start_book_scraping(book_id):
 def chapterdiscussion_view(request, book_id):
     # book_id = request.GET.get("book_id")
     found_book = Book.objects.filter(book_id=book_id).first()
-    discussions = Discussion.objects.filter(type="chapter", object_id=1).order_by(
-        "-last_update"
-    )
+    discussions = Discussion.objects.filter(
+        type="chapter", object_id=found_book.id
+    ).order_by("-last_update")
+    print(discussions)
     for discussion in discussions:
         discussion.chapter_title = discussion.title.split(" - ")[1]
         discussion.title = discussion.title.split(" - ")[0]

@@ -49,6 +49,12 @@
                     </tbody>
                 </table>
             </div>
+            {% if discussions|length == 0 %}
+                <div class="mt-4 ms-2">
+                    Please click <a href="#ticket_submitted"
+    class="underline cursor-pointer text-blue-600">here</a> to request chapter discussions.
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock content %}
