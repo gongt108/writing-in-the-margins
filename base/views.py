@@ -115,8 +115,8 @@ def bookclub_view(request):
             book_club.next_meeting_date = next_meeting_date
             book_club.save()
 
-        print(book_club.next_meeting_date)
-        print(timezone.now())
+        # print(book_club.next_meeting_date)
+        # print(timezone.now())
 
         if (
             book_club.next_meeting_date is not None
@@ -140,7 +140,6 @@ def book_view(request, book_id):
         found_book = Book.objects.filter(book_id=book_id).first()
 
     bookshelf = get_list_containing_book(request, found_book)
-    print(found_book)
 
     book_description = found_book.description
     if book_description is not None:
@@ -161,6 +160,11 @@ def book_view(request, book_id):
         elif "save_notification_button" in request.POST:
             coen_form = CreateOrEditNotificationForm(request.POST)
             handle_notification_list(request, coen_form, found_book)
+        elif "set_bookclub_book" in request.POST:
+            new_bookclub_book_id = request.POST["bookclub_book"]
+            new_bookclub_book = Book.objects.get(id=new_bookclub_book_id)
+            request.user.profile.book_club.book_id = new_bookclub_book
+            request.user.profile.book_club.save()
 
         return HttpResponseRedirect(reverse("base:book-view", args=(book_id,)))
 

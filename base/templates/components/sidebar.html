@@ -1,6 +1,6 @@
 {% load crispy_forms_tags %}
 <!-- sidebar.html -->
-<div class="flex flex-col w-60 content-center mt-[5%]">
+<div class="flex flex-col w-60 content-center">
         <img src="{{ book.book_cover }}"
              alt="book cover"
              class="w-48 rounded-lg mx-auto">
@@ -17,7 +17,18 @@
         <button type="menu"
                 data-modal-target="crud-modal"
                 data-modal-toggle="crud-modal"
-                class="text-cyan-500 bg-white rounded-full font-bold mt-6 p-2">Price Drop Notification</button>
+                class="text-white bg-blue-500 rounded-full font-bold mt-6 p-2">Price Drop Notification</button>
+        {% if user.profile.bookclub_admin %}
+                <form method="post" class="w-full">
+                        {% csrf_token %}
+                        <input type="hidden" name="bookclub_book" value={{ book.id }}>
+                        <button type="submit"
+                                name="set_bookclub_book"
+                                class="text-cyan-500 bg-white w-full rounded-full font-bold mt-6 p-2">
+                                Set as bookclub book
+                        </button>
+                </form>
+        {% endif %}
         <!-- Main modal -->
         <div id="default-modal"
              tabindex="-1"
