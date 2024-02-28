@@ -8,9 +8,9 @@ Discuss your next good read
 
 ## Installation Instructions
 
-1. Fork and clone this repository.
+1. &emsp;Fork and clone this repository.
 
-2. Set up a `.env` file and add the following:
+1. &emsp;Set up a `.env` file and add the following:
 
 - `SECRET_KEY = "YOUR_DJANGO_SECRET_KEY"`
 - `DB_NAME = "YOUR_DB_NAME"`
@@ -20,29 +20,27 @@ Discuss your next good read
 - `DB_PORT = 5432`
 - `SCRAPEOPS_API_KEY = "YOUR_SCRAPEOPS_API_KEY"`
 
-3. Run the following commands from your terminal while inside of the project's directory:
+1. &emsp;On your PostgresSQL create a database with the schema.sql included on this project.
+
+1. &emsp;Run the following commands from your terminal while inside of the project's directory:
+
+- Depending on how your PostgreSQL is setup, you might have to edit the values on the .env file. This file usually should be not included in repositories since it contains sensitive information but since this is mainly for demonstration adding the file shouldn't be a big deal.
 
 1. &emsp;`python -m pip install -r requirements.txt`
 
-1. &emsp;On your PostgresSQL create a database with the schema.sql included on this project.
+- `cd bookclub`
 
-1. &emsp;Depending on how your PostgreSQL is setup, you might have to edit the values on the .env file. This file usually should be not included in repositories since it contains sensitive information but since this is mainly for demonstration adding the file shouldn't be a big deal.
+- `python manage.py makemigrations`
 
-1. &emsp;`cd bookclub`
+- `python manage.py migrate`
 
-1. &emsp;`python manage.py makemigrations`
+- `python manage.py crawl`
 
-1. &emsp;`python manage.py migrate`
+- `python manage.py runserver`
 
-1. &emsp;`python manage.py crawl`
+- `python manage.py tailwind start`
 
-1. &emsp;`python manage.py runserver`
-
-1. &emsp;`python3 manage.py runserver`
-
-1. &emsp;`python manage.py tailwind start`
-
-1. &emsp;`./tailwindcss -i static/css/input.css -o static/css/output.css --watch`
+- `./tailwindcss -i static/css/input.css -o static/css/output.css --watch`
 
 ## User Stories
 
