@@ -167,7 +167,7 @@
                                     </>
                                     <div class="flex flex-col ">
                                         <a href="/discussion/{{ discussion.id }}">
-                                            <h3 class="font-semibold text-lg hover:underline">{{ discussion.title }}</h3>
+                                            <h3 class="font-semibold text-lg hover:underline">{{ discussion.title | slice:":23" }}</h3>
                                             {% if discussion.type == 'bookclub' %}
                                                 <p class="pl-2 text-sm font-light">Book Discussion</p>
                                             {% elif discussion.type == 'general' %}

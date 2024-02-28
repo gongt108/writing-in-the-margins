@@ -12,8 +12,6 @@ Discuss your next good read
 
 2. Set up a `.env` file and add the following:
 
-- `NEXT_PUBLIC_HEROKU_SERVER_URL=https://spoti-chat-41fc1f2f3950.herokuapp.com`
-- `NEXT_PUBLIC_LOCAL_SERVER_URL=http://localhost:8000`
 - `SECRET_KEY = "YOUR_DJANGO_SECRET_KEY"`
 - `DB_NAME = "YOUR_DB_NAME"`
 - `DB_USER = "YOUR_DB_USER"`
@@ -24,11 +22,29 @@ Discuss your next good read
 
 3. Run the following commands from your terminal while inside of the project's directory:
 
-- `python3 manage.py runserver`
-- `python manage.py tailwind start  `
-- `./tailwindcss -i static/css/input.css -o static/css/output.css --watch`
+1. &emsp;`python -m pip install -r requirements.txt`
 
-# User Stories
+1. &emsp;On your PostgresSQL create a database with the schema.sql included on this project.
+
+1. &emsp;Depending on how your PostgreSQL is setup, you might have to edit the values on the .env file. This file usually should be not included in repositories since it contains sensitive information but since this is mainly for demonstration adding the file shouldn't be a big deal.
+
+1. &emsp;`cd bookclub`
+
+1. &emsp;`python manage.py makemigrations`
+
+1. &emsp;`python manage.py migrate`
+
+1. &emsp;`python manage.py crawl`
+
+1. &emsp;`python manage.py runserver`
+
+1. &emsp;`python3 manage.py runserver`
+
+1. &emsp;`python manage.py tailwind start`
+
+1. &emsp;`./tailwindcss -i static/css/input.css -o static/css/output.css --watch`
+
+## User Stories
 
 - As a user I can create an account
 - As a user I can view and edit my profile information
