@@ -30,9 +30,9 @@ With _Writing in the Margins_, embark on a personalized reading journey tailored
 
 ## Installation
 
-1. &emsp;Fork and clone this repository.
+1. Fork and clone this repository.
 
-1. &emsp;Set up a `.env` file and add the following:
+2. Set up a `.env` file and add the following:
 
 - `SECRET_KEY = "YOUR_DJANGO_SECRET_KEY"`
 - `DB_NAME = "YOUR_DB_NAME"`
@@ -42,11 +42,11 @@ With _Writing in the Margins_, embark on a personalized reading journey tailored
 - `DB_PORT = 5432`
 - `SCRAPEOPS_API_KEY = "YOUR_SCRAPEOPS_API_KEY"`
 
-1. &emsp;On your PostgresSQL create a database with the schema.sql included on this project.
+3. On your PostgresSQL create a database with the schema.sql included on this project.
 
 - Depending on how your PostgreSQL is setup, you might have to edit the values on the .env file. This file usually should be not included in repositories since it contains sensitive information but since this is mainly for demonstration adding the file shouldn't be a big deal.
 
-1. &emsp;Run the following commands from your terminal while inside of the project's directory:
+4. Run the following commands from your terminal while inside of the project's directory:
 
 - `python -m pip install -r requirements.txt`
 
@@ -85,6 +85,8 @@ BIG STRETCH GOAL:
 
 ## DATABASE ERD
 
+![ERD](./static/media/erd.png)
+
 ## WIREFRAMES
 
 ## STACK USED
@@ -97,5 +99,6 @@ BIG STRETCH GOAL:
 
 # Challenges
 
-- Changing the class/styling of a dynamically generated element
-- Implementing a loading screen while the spider runs
+- Running the data scraper more than once.
+- Changing the class/styling of a dynamically generated element.
+- Implementing a loading screen while the spider runs.
