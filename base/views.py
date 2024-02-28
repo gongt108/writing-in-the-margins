@@ -10,6 +10,9 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 import sys
 import subprocess
 from .forms import (
@@ -393,7 +396,7 @@ def daily_price_scraping():
             "DOWNLOADER_MIDDLEWARES": {
                 "scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk": 610,
             },
-            "SCRAPEOPS_API_KEY": "84624c6b-0aa5-475a-91d2-116ba96de156",
+            "SCRAPEOPS_API_KEY": os.getenv("SCRAPEOPS_API_KEY"),
             "SCRAPEOPS_PROXY_ENABLED": True,
         }
     )

@@ -11,28 +11,6 @@ import psycopg2
 from bookscraper.items import AmazonItem
 
 
-# def get_notifications():
-#     connection = psycopg2.connect(
-#         host="localhost", user="tiffanygong", password="testpass", dbname="project4"
-#     )
-
-#     cur = connection.cursor()
-#     # Execute the query
-#     cur.execute(
-#         "SELECT title, contributors, price, email FROM base_book JOIN base_notification ON base_book.id = base_notification.book_id"
-#     )
-
-#     # Fetch all rows from the result set
-#     notifications = cur.fetchall()
-
-#     # Close the cursor and the connection
-#     cur.close()
-#     connection.close()
-
-#     # Return the fetched notifications
-#     return notifications
-
-
 class AmazonSearchProductSpider(scrapy.Spider):
     name = "amazon_search_product"
 

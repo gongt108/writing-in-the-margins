@@ -120,35 +120,3 @@ class AmazonscraperPipeline:
         adapter["email"] = adapter.get("email")
 
         return item
-
-
-# from scrapy.mail import MailSender
-
-# key = "EMAIL_HOST_PASSWORD"
-# db_password = os.getenv(key)
-# print(db_password)
-
-
-# class EmailUserPipeline:
-
-#     def send_email(self, item):
-#         mailer = MailSender()
-
-#         price = item["price"]
-#         name = item["name"]
-#         email = item["email"]
-
-#         subject = f"Price drop notification for {name}"
-#         message = f"A book on your watch list has dropped below its target price.\n\nBook: {name}\n\nPrice: {price}"
-
-#         print(f"message sent to{email}")
-#         try:
-#             # Send email
-#             mailer.send(
-#                 to=[email],
-#                 subject=subject,
-#                 body=message,
-#             )
-#             return f"message sent to{email}"
-#         except Exception as e:
-#             return {"success": False, "error": str(e)}
