@@ -4,17 +4,97 @@
 {% block content %}
     <div class="bg-blue-100 min-w-[52rem] mx-auto w-fit flex flex-1 flex-col px-24 xl:pt-12 2xl:pt-20 pb-20">
         <h1 class="mx-auto text-3xl font-bold mb-8">Profile Page</h1>
-        <div class="relative w-60 h-60 mx-auto  mb-6">
+        <div class="relative w-60 h-60 mx-auto  mb-6"
+             data-modal-target="photo-change-modal"
+             data-modal-toggle="photo-change-modal">
             <a class="opacity-0 hover:opacity-45 flex cursor-pointer w-60 h-60 object-cover rounded-full mx-auto mb-6 text-center bg-black items-center justify-center absolute z-30">
                 <p class="font-semibold text-white">Change Photo</p>
             </a>
-            <img src="https://i.redd.it/ai-new-characters-v0-r5ati85bf7ua1.jpg?width=1024&format=pjpg&auto=webp&s=39cc0ba21891f5fb4e11b599c970ae9a77557116"
+            <img src="{{ user.profile.img_url }}"
                  alt="profile picture"
                  class="w-60 h-60 object-cover rounded-full mx-auto relative z-20 cursor-pointer">
             {% comment %} <img src="https://as1.ftcdn.net/v2/jpg/05/86/50/06/1000_F_586500663_IOXpv2HouDEiTsmrfjCHQtAd09f3TNkE.jpg" alt="profile picture" class="w-60 h-60 object-cover rounded-full mx-auto relative z-20 cursor-pointer"> {% endcomment %}
             {% comment %} <img src="https://www.metastellar.com/wp-content/uploads/2023/06/Maria_Korolov_illustration_of_a_cute_bot_reading_a_book_02f788e8-bfe0-4834-8f7c-726b82ad0318-Midjourney.png" alt="profile picture" class="w-60 h-60 object-cover rounded-full mx-auto relative z-20 cursor-pointer"> {% endcomment %}
             {% comment %} <img src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/344101039/original/f5a6d068a400d1565b529d5f8dabb468bf84d4c6/desing-fantasy-character-books-cover-children-illustration.png" alt="profile picture" class="w-60 h-60 object-cover rounded-full mx-auto relative z-20 cursor-pointer"> {% endcomment %}
             {% comment %} <img src="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg" alt="profile picture" class="w-60 h-60 object-cover rounded-full mx-auto relative z-20 cursor-pointer"> {% endcomment %}
+        </div>
+        <div id="photo-change-modal"
+             tabindex="-1"
+             aria-hidden="true"
+             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative p-4 w-full max-h-full">
+                <!-- Modal content -->
+                <div class="relative w-fit mx-auto bg-white rounded-lg shadow dark:bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                        <h3 class="text-lg font-semibold text-gray-900 ">Notification Setup</h3>
+                        <button type="button"
+                                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                data-modal-toggle="crud-modal">
+                            <svg class="w-3 h-3"
+                                 aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 fill="none"
+                                 viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <form class="p-4 md:p-5 w-fit" method="post">
+                        {% csrf_token %}
+                        <div class="flex space-x-2 w-fit" id="profile_picture_options">
+                            {% for value, label in form.profile_picture.field.choices %}
+                                <label class="profile-picture-option relative w-fit flex">
+                                    <input type="radio"
+                                           name="profile_picture"
+                                           value="{{ value }}"
+                                           class="sr-only"
+                                           {% if form.profile_picture.value == value %}checked{% endif %}>
+                                    <img src="{{ value }}"
+                                         alt="{{ label }}"
+                                         class="profile_picture_option w-20 h-15 object-cover rounded-full cursor-pointer hover:border-2 hover:border-blue-500 focus:border-blue-500 focus:outline-none border-blue-500"
+                                         data-url="{{ value }}">
+                                </label>
+                            {% endfor %}
+                        </div>
+                        <button type="submit"
+                                name="save_profile_picture_button"
+                                class="text-white flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mx-auto mt-4">
+                            Save
+                        </button>
+                    </form>
+                    {% comment %} <form class="p-4 md:p-5 w-fit" method="post" id="profile_picture_form">
+                        {% csrf_token %}
+                        <div class="flex space-x-2 w-fit">
+                            <div class="flex space-x-2 w-fit" id="profile_picture_options">
+                                <img src="https://i.redd.it/ai-new-characters-v0-r5ati85bf7ua1.jpg?width=1024&format=pjpg&auto=webp&s=39cc0ba21891f5fb4e11b599c970ae9a77557116" alt="profile picture option" class="w-20 h-15 object-cover relative rounded-full cursor-pointer">
+                                <input type="hidden" name="selected_profile_picture" id="selected_profile_picture">
+                            </div>
+                            <div class="flex space-x-2 w-fit" id="profile_picture_options">
+                                <img src="https://as1.ftcdn.net/v2/jpg/05/86/50/06/1000_F_586500663_IOXpv2HouDEiTsmrfjCHQtAd09f3TNkE.jpg" alt="profile picture option" class="w-20 h-15 object-cover relative rounded-full cursor-pointer">
+                                <input type="hidden" name="selected_profile_picture" id="selected_profile_picture">
+                            </div>
+                            <div class="flex space-x-2 w-fit" id="profile_picture_options">
+                                <img src="https://www.metastellar.com/wp-content/uploads/2023/06/Maria_Korolov_illustration_of_a_cute_bot_reading_a_book_02f788e8-bfe0-4834-8f7c-726b82ad0318-Midjourney.png" alt="profile picture option" class="w-20 h-15 object-cover relative rounded-full cursor-pointer">
+                                <input type="hidden" name="selected_profile_picture" id="selected_profile_picture">
+                            </div>
+                            <div class="flex space-x-2 w-fit" id="profile_picture_options">
+                                <img src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/344101039/original/f5a6d068a400d1565b529d5f8dabb468bf84d4c6/desing-fantasy-character-books-cover-children-illustration.png" alt="profile picture option" class="w-20 h-15 object-cover relative rounded-full cursor-pointer">
+                                <input type="hidden" name="selected_profile_picture" id="selected_profile_picture">
+                            </div>
+                            <div class="flex space-x-2 w-fit" id="profile_picture_options">
+                                <img src="https://img.freepik.com/premium-photo/illustration-painting-girl-reading-book-big-bulb-generate-ai_868783-918.jpg" alt="profile picture option" class="w-20 h-15 object-cover relative rounded-full cursor-pointer">
+                                <input type="hidden" name="selected_profile_picture" id="selected_profile_picture">
+                            </div>
+                        </div>
+                        <button type="submit" name="save_profile_picture_button" class="text-white flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mx-auto mt-4">
+                            Save
+                        </button>
+                    </form> {% endcomment %}
+                </div>
+            </div>
         </div>
         <h1 class="mx-auto text-xl font-semibold mb-6">{{ user.profile.first_name|default:user.username }}</h1>
         <div class="flex flex-col space-y-2 border border-black rounded-lg p-4 mb-4">
@@ -94,4 +174,23 @@
             <em>No recent activity. Go read a book.</em>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profilePictures = document.querySelectorAll('.profile_picture_option');
+            const selectedPictureInput = document.getElementById('selected_profile_picture');
+    
+            profilePictures.forEach(picture => {
+                picture.addEventListener('click', function() {
+                    
+                    // Remove 'selected' class from all pictures
+                    profilePictures.forEach(p => p.classList.remove('border-2'));
+                    // Add 'selected' class to the clicked picture
+                    picture.classList.add('border-2');
+                    console.log(picture)
+                    // Set the selected picture URL to the hidden input value
+                    
+                });
+            });
+        });
+    </script>
 {% endblock content %}

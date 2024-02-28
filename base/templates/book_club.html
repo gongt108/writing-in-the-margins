@@ -200,7 +200,7 @@
             <h2 class="text-lg font-semibold  mb-4">Bookclub Members</h2>
             {% for member in members %}
                 <div class="flex items-center mb-4">
-                    <img src="https://m.media-amazon.com/images/I/81oCrA7-plL._AC_UF1000,1000_QL80_.jpg"
+                    <img src="{{ member.user.profile.img_url }}"
                          alt="book cover"
                          class="w-10 h-10 rounded-full mr-4">
                     <p class="font-medium text-gray-700">{{ member.user }}</p>

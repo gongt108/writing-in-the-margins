@@ -7,6 +7,9 @@ from base.models import BookClub, Book, Notification
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # image = models.ImageField(default="default.jpg", upload_to="profile_pic")
+    img_url = models.CharField(
+        default="https://png.pngtree.com/background/20230519/original/pngtree-girl-reading-books-in-a-picture-picture-image_2658551.jpg"
+    )
     email = models.EmailField(default="")
     first_name = models.CharField(max_length=100, default="John")
     last_name = models.CharField(max_length=100, default="Doe")

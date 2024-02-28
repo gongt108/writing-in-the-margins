@@ -13,7 +13,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 
-from .forms import ProfileUpdateForm, UserUpdateForm
+from .forms import ProfileUpdateForm, UserUpdateForm, ProfilePictureForm
 from base.models import Book, Notification
 from base.forms import CreateOrEditNotificationForm
 
@@ -71,7 +71,17 @@ def login_view(request):
 @login_required
 def profile_view(request):
     user = request.user
-    return render(request, "users/profile.html", {"user": user})
+    form = ProfilePictureForm()
+    if request.method == "POST":
+        form = ProfilePictureForm(request.POST)
+        if form.is_valid():
+            selected_profile_picture = form.cleaned_data["profile_picture"]
+            user.profile.img_url = selected_profile_picture
+            user.profile.save()
+            # Process the selected profile picture URL as needed
+            return HttpResponseRedirect(reverse("profile"))
+
+    return render(request, "users/profile.html", {"user": user, "form": form})
 
 
 @login_required
