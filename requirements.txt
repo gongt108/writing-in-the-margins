@@ -43,6 +43,7 @@ google-cloud-api-keys==0.5.7
 googleapis-common-protos==1.62.0
 grpcio==1.60.1
 grpcio-status==1.60.1
+gunicorn==21.2.0
 html-tag-names==0.1.2
 html-void-elements==0.1.0
 httplib2==0.22.0
