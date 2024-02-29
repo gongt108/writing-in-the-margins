@@ -88,6 +88,16 @@ BIG STRETCH GOAL:
 ![ERD](./static/media/erd.png)
 
 ## WIREFRAMES
+![Home Page](./static/media/homepage.png)
+![Login](./static/media/login.png)
+![Signup](./static/media/signup.png)
+![Search Results](./static/media/searchresults.png)
+![Book club](./static/media/bookclub.png)
+![BookNotLoggedIn](./static/media/showbooknotloggedin.png)
+![Book](./static/media/showbook.png)
+![Profile](./static/media/profile.png)
+![Edit Profile](./static/media/editprofile.png)
+![Discussion](./static/media/discussion.png)
 
 ## STACK USED
 
